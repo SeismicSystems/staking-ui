@@ -10,6 +10,7 @@
         "@tanstack/react-query": "^5.90.10",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
+        "seismic-react": "^1.0.49",
         "viem": "^2.40.0",
         "wagmi": "^3.0.1",
       },
@@ -924,6 +925,10 @@
 
     "scheduler": ["scheduler@0.27.0", "", {}, "sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q=="],
 
+    "seismic-react": ["seismic-react@1.0.49", "", { "peerDependencies": { "@rainbow-me/rainbowkit": "^2.0.0", "react": "^18", "react-dom": "^18", "seismic-viem": ">=1.0.49", "typescript": ">=5.0.4", "viem": "2.x", "wagmi": "^2.0.0" }, "optionalPeers": ["typescript"] }, "sha512-QXTBGeX6cF/vpykgPHgy78s872zS/wMLnqMr2Vn6vvKBCbgvtQ0vg85rfSMvoBVExd2KI7wMzgB/j0TQAIWhcg=="],
+
+    "seismic-viem": ["seismic-viem@1.0.49", "", { "dependencies": { "@noble/ciphers": "^1.2.0", "@noble/curves": "^1.8.0", "@noble/hashes": "^1.7.0" }, "peerDependencies": { "viem": "2.x" } }, "sha512-N93CHx3hSc9F59S2nf4ScsToTUrWUptnD6uF/70XCw4ltw/igUzQsx3lyABd2q0QjcShPZWR0AH3hdM+6Oebqg=="],
+
     "semver": ["semver@7.7.2", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-RF0Fw+rO5AMf9MAyaRXI4AV0Ulj5lMHqVxxdSgiVbixSCXoEmmX/jk0CuJw4+3SqroYO9VoUh+HcuJivvtJemA=="],
 
     "set-blocking": ["set-blocking@2.0.0", "", {}, "sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw=="],
@@ -1135,6 +1140,8 @@
     "micromatch/picomatch": ["picomatch@2.3.1", "", {}, "sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA=="],
 
     "rpc-websockets/@types/ws": ["@types/ws@8.18.1", "", { "dependencies": { "@types/node": "*" } }, "sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg=="],
+
+    "seismic-viem/@noble/curves": ["@noble/curves@1.9.7", "", { "dependencies": { "@noble/hashes": "1.8.0" } }, "sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw=="],
 
     "yargs/find-up": ["find-up@4.1.0", "", { "dependencies": { "locate-path": "^5.0.0", "path-exists": "^4.0.0" } }, "sha512-PpOwAdQ/YlXQ2vj8a3h8IipDuYRi3wceVQQGYWxNINccq40Anw7BlsEXCMbt1Zt+OLA6Fq9suIpIWD0OsnISlw=="],
 

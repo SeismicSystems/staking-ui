@@ -8,18 +8,18 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@rainbow-me/rainbowkit/styles.css";
 import { mainnet } from "wagmi/chains";
 import { Home } from "./components/Home";
-// import { sanvil, seismicDevnet2 } from "seismic-react/rainbowkit";
+import { sanvil, seismicDevnet2 } from "seismic-react/rainbowkit";
+import { CHAIN_ID } from "./hooks/useContract";
 
-// const SUPPORTED_CHAINS = [sanvil, seismicDevnet2];
-// const CHAINS = SUPPORTED_CHAINS.filter((c) => c.id === CHAIN_ID);
+const SUPPORTED_CHAINS = [sanvil, seismicDevnet2];
+const CHAINS = SUPPORTED_CHAINS.filter((c) => c.id === CHAIN_ID);
 
 const config = getDefaultConfig({
   appName: "Staking UI",
-  projectId: "0983a6473d37a95e7d569f091435c383",
-  chains: [mainnet],
-  transports: {
-    [mainnet.id]: http(),
-  },
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  // @ts-expect-error: this is fine
+  chains: CHAINS,
+  ssr: false,
 });
 
 const client = new QueryClient();
