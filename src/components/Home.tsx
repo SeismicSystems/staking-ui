@@ -1,9 +1,10 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
-
+import { useClient } from "../hooks/useClient";
 import { DepositSignatureData } from "./DepositSignatureData";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
+import { formatGwei } from "viem";
 export const Home = () => {
   const { address } = useAccount();
   const [consensusPublicKeys, setConsensusPublicKeys] = useState<string[]>([]);
@@ -16,7 +17,7 @@ export const Home = () => {
     consensus_signature: number[];
     deposit_data_root: number[];
   } | null>(null);
-
+  const theme = useTheme();
   useEffect(() => {
     const fetchPublicKeys = async () => {
       const response = await fetch("/get_public_keys");
@@ -38,6 +39,14 @@ export const Home = () => {
     };
     getDepositSignature();
   }, [consensusPublicKeys, nodePublicKeys, address]);
+  const { balanceEthWallet, walletAddress } = useClient();
+  const [balance, setBalance] = useState<bigint | null>(null);
+
+  useEffect(() => {
+    balanceEthWallet()
+      .then((b) => setBalance(b))
+      .catch((e) => console.error("Error fetching balance", e));
+  }, [balanceEthWallet]);
 
   return (
     <div>
@@ -47,9 +56,10 @@ export const Home = () => {
           display: "flex",
           height: "100dvh",
           border: "1px solid blue",
-          width: { xs: "100dvw", sm: "80dvw" },
+          width: { xs: "100dvw", sm: "100dvw", md: "90dvw" },
           alignItems: "center",
           flexDirection: "column",
+          justifyContent: "center",
         }}
       >
         <Typography variant="h3" sx={{ mt: 4 }}>
@@ -57,17 +67,24 @@ export const Home = () => {
         </Typography>
         <Box
           sx={{
-            ml: "auto",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
             pb: 2,
-            pr: 4,
             pt: 4,
-            alignSelf: "flex-end",
-            justifySelf: "flex-end",
           }}
         >
           <ConnectButton accountStatus="full" showBalance={true} />
+          <Typography
+            variant="body2"
+            sx={{ color: theme.palette.primary.main, mt: 1 }}
+          >
+            Balance: {balance ? formatGwei(balance) : "0"} ETH
+          </Typography>
         </Box>
         <DepositSignatureData
+          isWalletConnected={!!address}
           depositSignatureData={
             depositSignatureData || {
               node_pubkey: [],

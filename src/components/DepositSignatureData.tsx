@@ -1,7 +1,13 @@
-import { useMemo, useState, useEffect } from "react";
-import { Box, Typography, useTheme, IconButton, Tooltip } from "@mui/material";
+import { useMemo } from "react";
+import {
+  Box,
+  Typography,
+  useTheme,
+  IconButton,
+  Tooltip,
+  CircularProgress,
+} from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { useClient } from "../hooks/useClient";
 
 interface DepositSignatureDataProps {
   depositSignatureData: {
@@ -12,6 +18,7 @@ interface DepositSignatureDataProps {
     consensus_signature: number[];
     deposit_data_root: number[];
   };
+  isWalletConnected: boolean;
 }
 
 const DataRow = ({ label, value }: { label: string; value: string }) => {
@@ -24,15 +31,6 @@ const DataRow = ({ label, value }: { label: string; value: string }) => {
     navigator.clipboard.writeText(value);
   };
 
-  const { balanceEthWallet, walletAddress } = useClient();
-  const [balance, setBalance] = useState<bigint | null>(null);
-
-  useEffect(() => {
-    balanceEthWallet()
-      .then((b) => setBalance(b))
-      .catch((e) => console.error("Error fetching balance", e));
-  }, [balanceEthWallet]);
-
   return (
     <Box
       sx={{
@@ -43,7 +41,7 @@ const DataRow = ({ label, value }: { label: string; value: string }) => {
         gap: 1,
         backgroundColor: theme.palette.background.paper,
         borderRadius: 5,
-        width: "100%",
+        width: { xs: "100%", sm: "100%", md: "15dvw" },
         padding: 2, // Added a little padding to make it look better with background
       }}
     >
@@ -57,19 +55,26 @@ const DataRow = ({ label, value }: { label: string; value: string }) => {
         {label}
       </Typography>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Typography
-          sx={{
-            color: theme.palette.primary.main,
-            fontSize: { xs: ".9rem", sm: "1rem" },
-          }}
-        >
-          {displayValue}
-        </Typography>
-        <Tooltip sx={{}} title="Copy to clipboard">
-          <IconButton onClick={handleCopy} size="small">
-            <ContentCopyIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
+        {value ? (
+          <>
+            <Typography
+              sx={{
+                color: theme.palette.primary.main,
+                fontSize: { xs: ".9rem", sm: "1rem" },
+              }}
+            >
+              {displayValue}
+            </Typography>
+
+            <Tooltip sx={{}} title="Copy to clipboard">
+              <IconButton onClick={handleCopy} size="small">
+                <ContentCopyIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </>
+        ) : (
+          <CircularProgress size={20} />
+        )}
       </Box>
     </Box>
   );
@@ -77,6 +82,7 @@ const DataRow = ({ label, value }: { label: string; value: string }) => {
 
 export const DepositSignatureData = ({
   depositSignatureData,
+  isWalletConnected,
 }: DepositSignatureDataProps) => {
   console.log(depositSignatureData, "depositSignatureData from dsd component");
   const hexResponse = useMemo(() => {
@@ -102,6 +108,11 @@ export const DepositSignatureData = ({
     };
   }, [depositSignatureData]);
 
+  const getValue = (val: string) => {
+    if (!isWalletConnected) return "0000000";
+    return val;
+  };
+
   return (
     <>
       <Box
@@ -112,23 +123,29 @@ export const DepositSignatureData = ({
           gap: 1,
         }}
       >
-        <DataRow label="Node PubKey" value={hexResponse.node_pubkey} />
+        <DataRow
+          label="Node PubKey"
+          value={getValue(hexResponse.node_pubkey)}
+        />
         <DataRow
           label="Consensus PubKey"
-          value={hexResponse.consensus_pubkey}
+          value={getValue(hexResponse.consensus_pubkey)}
         />
         <DataRow
           label="Withdrawal Creds"
-          value={hexResponse.withdrawal_credentials}
+          value={getValue(hexResponse.withdrawal_credentials)}
         />
-        <DataRow label="Node Sig" value={hexResponse.node_signature} />
+        <DataRow
+          label="Node Sig"
+          value={getValue(hexResponse.node_signature)}
+        />
         <DataRow
           label="Consensus Sig"
-          value={hexResponse.consensus_signature}
+          value={getValue(hexResponse.consensus_signature)}
         />
         <DataRow
           label="Deposit Data Root"
-          value={hexResponse.deposit_data_root}
+          value={getValue(hexResponse.deposit_data_root)}
         />
       </Box>
     </>
