@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 // import { type ByteArrayResponse } from "../hooks/useBytesToHex";
 // import { useBytesToHex } from "../hooks/useBytesToHex";
 import { DepositSignatureData } from "./DepositSignatureData";
+import { Box } from "@mui/material";
 export const Home = () => {
   const [consensusPublicKeys, setConsensusPublicKeys] = useState<string[]>([]);
   const [nodePublicKeys, setNodePublicKeys] = useState<string[]>([]);
@@ -39,19 +40,40 @@ export const Home = () => {
   console.log(consensusPublicKeys, "consensusPublicKeys");
   return (
     <div>
-      <ConnectButton />
-      <DepositSignatureData
-        depositSignatureData={
-          depositSignatureData || {
-            node_pubkey: [],
-            consensus_pubkey: [],
-            withdrawal_credentials: [],
-            node_signature: [],
-            consensus_signature: [],
-            deposit_data_root: [],
+      <Box
+        sx={{
+          mt: 4,
+          display: "flex",
+          height: "100dvh",
+          width: { xs: "100dvw", sm: "80dvw" },
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
+        <Box
+          sx={{
+            ml: "auto",
+            pb: 2,
+            pr: 4,
+            alignSelf: "flex-end",
+            justifySelf: "flex-end",
+          }}
+        >
+          <ConnectButton />
+        </Box>
+        <DepositSignatureData
+          depositSignatureData={
+            depositSignatureData || {
+              node_pubkey: [],
+              consensus_pubkey: [],
+              withdrawal_credentials: [],
+              node_signature: [],
+              consensus_signature: [],
+              deposit_data_root: [],
+            }
           }
-        }
-      />
+        />
+      </Box>
     </div>
   );
 };
