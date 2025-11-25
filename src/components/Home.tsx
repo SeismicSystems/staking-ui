@@ -1,13 +1,19 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
-import { type ByteArrayResponse } from "../hooks/useBytesToHex";
+// import { type ByteArrayResponse } from "../hooks/useBytesToHex";
 // import { useBytesToHex } from "../hooks/useBytesToHex";
-// import { DepositSignatureDataDisplay } from "./DepositSignatureDataDisplay";
+import { DepositSignatureData } from "./DepositSignatureData";
 export const Home = () => {
   const [consensusPublicKeys, setConsensusPublicKeys] = useState<string[]>([]);
   const [nodePublicKeys, setNodePublicKeys] = useState<string[]>([]);
-  const [depositSignatureData, setDepositSignatureData] =
-    useState<ByteArrayResponse | null>(null);
+  const [depositSignatureData, setDepositSignatureData] = useState<{
+    node_pubkey: number[];
+    consensus_pubkey: number[];
+    withdrawal_credentials: number[];
+    node_signature: number[];
+    consensus_signature: number[];
+    deposit_data_root: number[];
+  } | null>(null);
 
   useEffect(() => {
     const fetchPublicKeys = async () => {
@@ -34,9 +40,18 @@ export const Home = () => {
   return (
     <div>
       <ConnectButton />
-      {/* <DepositSignatureDataDisplay
-        depositSignatureData={depositSignatureData || null}
-      /> */}
+      <DepositSignatureData
+        depositSignatureData={
+          depositSignatureData || {
+            node_pubkey: [],
+            consensus_pubkey: [],
+            withdrawal_credentials: [],
+            node_signature: [],
+            consensus_signature: [],
+            deposit_data_root: [],
+          }
+        }
+      />
     </div>
   );
 };
