@@ -1,10 +1,11 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
-// import { type ByteArrayResponse } from "../hooks/useBytesToHex";
-// import { useBytesToHex } from "../hooks/useBytesToHex";
+import { useAccount } from "wagmi";
+
 import { DepositSignatureData } from "./DepositSignatureData";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 export const Home = () => {
+  const { address } = useAccount();
   const [consensusPublicKeys, setConsensusPublicKeys] = useState<string[]>([]);
   const [nodePublicKeys, setNodePublicKeys] = useState<string[]>([]);
   const [depositSignatureData, setDepositSignatureData] = useState<{
@@ -28,38 +29,45 @@ export const Home = () => {
 
   useEffect(() => {
     const getDepositSignature = async () => {
+      if (!address) return;
       const response = await fetch(
-        "/get_deposit_signature?amount=32&address=0xaa1cd3f5bcd5aeea5f419c6c49a05f9e8abc104b"
+        `/get_deposit_signature?amount=32&address=${address}`
       );
       const data = await response.json();
       setDepositSignatureData(data);
     };
     getDepositSignature();
-  }, [consensusPublicKeys, nodePublicKeys]);
+  }, [consensusPublicKeys, nodePublicKeys, address]);
   console.log(depositSignatureData, "depositSignatureData");
   console.log(consensusPublicKeys, "consensusPublicKeys");
+  console.log(address, "address");
   return (
     <div>
       <Box
+        className="home-container"
         sx={{
-          mt: 4,
           display: "flex",
           height: "100dvh",
+          border: "1px solid blue",
           width: { xs: "100dvw", sm: "80dvw" },
           alignItems: "center",
           flexDirection: "column",
         }}
       >
+        <Typography variant="h3" sx={{ mt: 4 }}>
+          Seismic Staking
+        </Typography>
         <Box
           sx={{
             ml: "auto",
             pb: 2,
             pr: 4,
+            pt: 4,
             alignSelf: "flex-end",
             justifySelf: "flex-end",
           }}
         >
-          <ConnectButton />
+          <ConnectButton accountStatus="full" showBalance={true} />
         </Box>
         <DepositSignatureData
           depositSignatureData={
