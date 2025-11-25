@@ -10,6 +10,8 @@ import { mainnet } from "wagmi/chains";
 import { Home } from "./components/Home";
 import { sanvil, seismicDevnet2 } from "seismic-react/rainbowkit";
 import { CHAIN_ID } from "./hooks/useContract";
+import { ThemeProvider, CssBaseline } from "@mui/material";
+import { theme } from "./theme";
 
 const SUPPORTED_CHAINS = [sanvil, seismicDevnet2];
 const CHAINS = SUPPORTED_CHAINS.filter((c) => c.id === CHAIN_ID);
@@ -33,7 +35,10 @@ const Providers: React.FC<PropsWithChildren<{ config: Config }>> = ({
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={client}>
-        <RainbowKitProvider>{children}</RainbowKitProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <RainbowKitProvider>{children}</RainbowKitProvider>
+        </ThemeProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
