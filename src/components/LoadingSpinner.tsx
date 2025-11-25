@@ -21,6 +21,23 @@ export const LoadingSpinner = ({ size = 60 }: LoadingSpinnerProps) => {
           alignItems: "center",
         }}
       >
+        {/* Pulsing background glow */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            width: size * 1.2,
+            height: size * 1.2,
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(130, 90, 109, 0.6) 0%, rgba(130, 90, 109, 0) 70%)",
+            animation: "glowPulse 2s infinite ease-in-out",
+            zIndex: 0,
+            pointerEvents: "none",
+          }}
+        />
+
         {/* Base logo - static */}
         <img
           src="/main.png"
@@ -29,6 +46,8 @@ export const LoadingSpinner = ({ size = 60 }: LoadingSpinnerProps) => {
             height: size,
             width: size,
             objectFit: "contain",
+            position: "relative",
+            zIndex: 1,
           }}
         />
 
@@ -41,6 +60,7 @@ export const LoadingSpinner = ({ size = 60 }: LoadingSpinnerProps) => {
             position: "absolute",
             top: 0,
             left: 0,
+            zIndex: 2,
           }}
         >
           <defs>
@@ -88,6 +108,21 @@ export const LoadingSpinner = ({ size = 60 }: LoadingSpinnerProps) => {
             }
             to { 
               stroke-dashoffset: 900; /* Total dash + gap length */
+            }
+          }
+
+          @keyframes glowPulse {
+            0% {
+              transform: translate(-50%, -50%) scale(0.8);
+              opacity: 0.5;
+            }
+            50% {
+              transform: translate(-50%, -50%) scale(1.2);
+              opacity: 1;
+            }
+            100% {
+              transform: translate(-50%, -50%) scale(0.8);
+              opacity: 0.5;
             }
           }
         `}

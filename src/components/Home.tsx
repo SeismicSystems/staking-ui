@@ -1,9 +1,11 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
-
+import { useClient } from "../hooks/useClient";
 import { DepositSignatureData } from "./DepositSignatureData";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
+import { formatEther } from "viem";
+import { StakeComponent } from "../components/StakeComponent";
 export const Home = () => {
   const { address } = useAccount();
   const [consensusPublicKeys, setConsensusPublicKeys] = useState<string[]>([]);
@@ -16,7 +18,7 @@ export const Home = () => {
     consensus_signature: number[];
     deposit_data_root: number[];
   } | null>(null);
-
+  const theme = useTheme();
   useEffect(() => {
     const fetchPublicKeys = async () => {
       const response = await fetch("/get_public_keys");
@@ -38,9 +40,15 @@ export const Home = () => {
     };
     getDepositSignature();
   }, [consensusPublicKeys, nodePublicKeys, address]);
-  console.log(depositSignatureData, "depositSignatureData");
-  console.log(consensusPublicKeys, "consensusPublicKeys");
-  console.log(address, "address");
+  const { balanceEthWallet } = useClient();
+  const [balance, setBalance] = useState<bigint | null>(null);
+
+  useEffect(() => {
+    balanceEthWallet()
+      .then((b) => setBalance(b))
+      .catch((e) => console.error("Error fetching balance", e));
+  }, [balanceEthWallet]);
+
   return (
     <div>
       <Box
@@ -48,28 +56,39 @@ export const Home = () => {
         sx={{
           display: "flex",
           height: "100dvh",
-          border: "1px solid blue",
-          width: { xs: "100dvw", sm: "80dvw" },
+          width: { xs: "100dvw", sm: "100dvw", md: "90dvw" },
           alignItems: "center",
           flexDirection: "column",
+          justifyContent: "center",
         }}
       >
-        <Typography variant="h3" sx={{ mt: 4 }}>
-          Seismic Staking
-        </Typography>
+        <Box sx={{ mb: 2 }}>
+          <img
+            src="/seis_logo.png"
+            alt="Seismic Logo"
+            style={{ height: "50px" }}
+          />
+        </Box>
         <Box
           sx={{
-            ml: "auto",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
             pb: 2,
-            pr: 4,
             pt: 4,
-            alignSelf: "flex-end",
-            justifySelf: "flex-end",
           }}
         >
           <ConnectButton accountStatus="full" showBalance={true} />
+          <Typography
+            variant="body2"
+            sx={{ color: theme.palette.primary.main, mt: 1 }}
+          >
+            Balance: {balance ? formatEther(balance) : "0"} ETH
+          </Typography>
         </Box>
         <DepositSignatureData
+          isWalletConnected={!!address}
           depositSignatureData={
             depositSignatureData || {
               node_pubkey: [],
@@ -80,6 +99,10 @@ export const Home = () => {
               deposit_data_root: [],
             }
           }
+        />
+        <StakeComponent
+          depositSignatureData={depositSignatureData}
+          balance={balance}
         />
       </Box>
     </div>

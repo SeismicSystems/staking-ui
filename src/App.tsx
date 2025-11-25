@@ -12,6 +12,7 @@ import { sanvil, seismicDevnet2 } from "seismic-react/rainbowkit";
 import { CHAIN_ID } from "./hooks/useContract";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { theme } from "./theme";
+import { ShieldedWalletProvider } from "seismic-react";
 
 const SUPPORTED_CHAINS = [sanvil, seismicDevnet2];
 const CHAINS = SUPPORTED_CHAINS.filter((c) => c.id === CHAIN_ID);
@@ -30,14 +31,25 @@ const Providers: React.FC<PropsWithChildren<{ config: Config }>> = ({
   config,
   children,
 }) => {
-  // const publicChain = CHAINS[0];
-  // const publicTransport = http(publicChain.rpcUrls.default.http[0]);
+  const publicChain = CHAINS[0];
+  const publicTransport = http(publicChain.rpcUrls.default.http[0]);
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={client}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <RainbowKitProvider>{children}</RainbowKitProvider>
+          <RainbowKitProvider>
+            {" "}
+            <ShieldedWalletProvider
+              config={config}
+              options={{
+                publicTransport,
+                publicChain,
+              }}
+            >
+              {children}
+            </ShieldedWalletProvider>
+          </RainbowKitProvider>
         </ThemeProvider>
       </QueryClientProvider>
     </WagmiProvider>
