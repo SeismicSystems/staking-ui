@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Box, Typography, useTheme, IconButton, Tooltip } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { useClient } from "../hooks/useClient";
 
 interface DepositSignatureDataProps {
   depositSignatureData: {
@@ -22,6 +23,15 @@ const DataRow = ({ label, value }: { label: string; value: string }) => {
   const handleCopy = () => {
     navigator.clipboard.writeText(value);
   };
+
+  const { balanceEthWallet, walletAddress } = useClient();
+  const [balance, setBalance] = useState<bigint | null>(null);
+
+  useEffect(() => {
+    balanceEthWallet()
+      .then((b) => setBalance(b))
+      .catch((e) => console.error("Error fetching balance", e));
+  }, [balanceEthWallet]);
 
   return (
     <Box

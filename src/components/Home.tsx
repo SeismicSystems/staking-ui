@@ -38,9 +38,7 @@ export const Home = () => {
     };
     getDepositSignature();
   }, [consensusPublicKeys, nodePublicKeys, address]);
-  console.log(depositSignatureData, "depositSignatureData");
-  console.log(consensusPublicKeys, "consensusPublicKeys");
-  console.log(address, "address");
+
   return (
     <div>
       <Box
@@ -81,6 +79,13 @@ export const Home = () => {
             }
           }
         />
+        <Box sx={{ mt: "auto", mb: 2 }}>
+          <img
+            src="/seis_logo.png"
+            alt="Seismic Logo"
+            style={{ height: "50px" }}
+          />
+        </Box>
       </Box>
     </div>
   );
