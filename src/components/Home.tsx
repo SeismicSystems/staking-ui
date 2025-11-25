@@ -4,7 +4,8 @@ import { useAccount } from "wagmi";
 import { useClient } from "../hooks/useClient";
 import { DepositSignatureData } from "./DepositSignatureData";
 import { Box, Typography, useTheme } from "@mui/material";
-import { formatGwei } from "viem";
+import { formatEther } from "viem";
+import { StakeComponent } from "../components/StakeComponent";
 export const Home = () => {
   const { address } = useAccount();
   const [consensusPublicKeys, setConsensusPublicKeys] = useState<string[]>([]);
@@ -39,7 +40,7 @@ export const Home = () => {
     };
     getDepositSignature();
   }, [consensusPublicKeys, nodePublicKeys, address]);
-  const { balanceEthWallet, walletAddress } = useClient();
+  const { balanceEthWallet } = useClient();
   const [balance, setBalance] = useState<bigint | null>(null);
 
   useEffect(() => {
@@ -55,16 +56,19 @@ export const Home = () => {
         sx={{
           display: "flex",
           height: "100dvh",
-          border: "1px solid blue",
           width: { xs: "100dvw", sm: "100dvw", md: "90dvw" },
           alignItems: "center",
           flexDirection: "column",
           justifyContent: "center",
         }}
       >
-        <Typography variant="h3" sx={{ mt: 4 }}>
-          Seismic Staking
-        </Typography>
+        <Box sx={{ mb: 2 }}>
+          <img
+            src="/seis_logo.png"
+            alt="Seismic Logo"
+            style={{ height: "50px" }}
+          />
+        </Box>
         <Box
           sx={{
             display: "flex",
@@ -80,7 +84,7 @@ export const Home = () => {
             variant="body2"
             sx={{ color: theme.palette.primary.main, mt: 1 }}
           >
-            Balance: {balance ? formatGwei(balance) : "0"} ETH
+            Balance: {balance ? formatEther(balance) : "0"} ETH
           </Typography>
         </Box>
         <DepositSignatureData
@@ -96,13 +100,10 @@ export const Home = () => {
             }
           }
         />
-        <Box sx={{ mt: "auto", mb: 2 }}>
-          <img
-            src="/seis_logo.png"
-            alt="Seismic Logo"
-            style={{ height: "50px" }}
-          />
-        </Box>
+        <StakeComponent
+          depositSignatureData={depositSignatureData}
+          balance={balance}
+        />
       </Box>
     </div>
   );
