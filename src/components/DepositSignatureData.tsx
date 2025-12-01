@@ -38,11 +38,10 @@ const DataRow = ({ label, value }: { label: string; value: string }) => {
         flexDirection: "column",
         justifyContent: "flex-start",
         alignItems: "flex-start",
-        gap: 1,
+
         backgroundColor: theme.palette.background.paper,
         borderRadius: 5,
-        width: { xs: "100%", sm: "100%", md: "20dvw", lg: "15dvw" },
-        padding: 2, // Added a little padding to make it look better with background
+        padding: 2,
       }}
     >
       <Typography
@@ -84,7 +83,6 @@ export const DepositSignatureData = ({
   depositSignatureData,
   isWalletConnected,
 }: DepositSignatureDataProps) => {
-  console.log(depositSignatureData, "depositSignatureData from dsd component");
   const hexResponse = useMemo(() => {
     return {
       node_pubkey: depositSignatureData.node_pubkey
@@ -119,7 +117,7 @@ export const DepositSignatureData = ({
         className="deposit-signature-data"
         sx={{
           display: "grid",
-          gridTemplateColumns: { xs: "1fr 1fr" },
+          gridTemplateColumns: { xs: "1fr 1fr", lg: "1fr 1fr 1fr" },
           gap: 1,
         }}
       >

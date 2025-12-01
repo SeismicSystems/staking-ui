@@ -1,12 +1,10 @@
 import type { PropsWithChildren } from "react";
 import "./App.css";
-import { LoadingSpinner } from "./components/LoadingSpinner";
-import { ConnectButton, getDefaultConfig } from "@rainbow-me/rainbowkit";
+import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiProvider, http, type Config } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@rainbow-me/rainbowkit/styles.css";
-import { mainnet } from "wagmi/chains";
 import { Home } from "./components/Home";
 import { sanvil, localSeismicDevnet } from "seismic-react/rainbowkit";
 import { CHAIN_ID } from "./hooks/useContract";

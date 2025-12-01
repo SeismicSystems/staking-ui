@@ -1,4 +1,3 @@
-import { useShieldedContract } from 'seismic-react'
 
 
 
