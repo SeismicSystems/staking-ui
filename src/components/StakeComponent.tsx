@@ -144,7 +144,7 @@ export const StakeComponent = ({
           sx={{
             width: "100%",
             wordBreak: "break-word",
-            overflowWrap: "break-word"
+            overflowWrap: "break-word",
           }}
         >
           Deposit successful! Tx: {txHash}
@@ -158,7 +158,7 @@ export const StakeComponent = ({
                 width: "100%",
                 wordBreak: "break-word",
                 overflowWrap: "break-word",
-                mb: 2
+                mb: 2,
               }}
             >
               {error}
@@ -173,6 +173,7 @@ export const StakeComponent = ({
               min: "0",
               step: "0.01",
             }}
+            error={parseFloat(stakeAmount) > 32}
             sx={{
               mb: 2,
               width: "100%",
@@ -180,14 +181,23 @@ export const StakeComponent = ({
                 borderRadius: 2,
               },
             }}
-            helperText="Minimum: 32 ETH for validator"
+            helperText={
+              parseFloat(stakeAmount) > 32
+                ? "Amount exceeds maximum of 32 ETH"
+                : "Maximum: 32 ETH"
+            }
           />
           <Button
             sx={{ width: "100%", height: "100%", borderRadius: 5 }}
             variant="contained"
             size="large"
             onClick={handleDeposit}
-            disabled={!walletClient}
+            disabled={
+              !walletClient ||
+              parseFloat(stakeAmount) > 32 ||
+              parseFloat(stakeAmount) <= 0 ||
+              !stakeAmount
+            }
           >
             <Typography sx={{ fontSize: "1.2rem", fontWeight: "bold" }}>
               Stake {stakeAmount} ETH
