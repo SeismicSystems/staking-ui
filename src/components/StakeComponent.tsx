@@ -131,13 +131,27 @@ export const StakeComponent = ({
           <LoadingSpinner size={100} />
         </>
       ) : txHash ? (
-        <Alert severity="success">Deposit successful! Tx: {txHash}</Alert>
+        <Alert
+          severity="success"
+          sx={{
+            width: "100%",
+            wordBreak: "break-word",
+            overflowWrap: "break-word"
+          }}
+        >
+          Deposit successful! Tx: {txHash}
+        </Alert>
       ) : (
         <>
           {error && (
             <Alert
               severity="error"
-              sx={{ maxWidth: "400px", wordBreak: "break-word", mb: 2 }}
+              sx={{
+                width: "100%",
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
+                mb: 2
+              }}
             >
               {error}
             </Alert>
