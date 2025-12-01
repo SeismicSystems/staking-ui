@@ -4,8 +4,6 @@ import { LoadingSpinner } from "./LoadingSpinner";
 import { useShieldedWallet } from "seismic-react";
 import { type Hex, parseEther, formatEther } from "viem";
 
-const VALIDATOR_MINIMUM_STAKE = parseEther("32");
-
 interface StakeComponentProps {
   depositSignatureData: {
     node_pubkey: number[];
