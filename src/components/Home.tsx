@@ -33,7 +33,7 @@ export const Home = () => {
     const getDepositSignature = async () => {
       if (!address) return;
       const response = await fetch(
-        `/get_deposit_signature/32/${address}`
+        `/get_deposit_signature/32000000000/${address}`
       );
       console.log("response", response);
       const data = await response.json();

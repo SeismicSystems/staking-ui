@@ -5,7 +5,7 @@ import { useShieldedWallet } from "seismic-react";
 import { type Hex, parseEther, formatEther } from "viem";
 import { DEPOSIT_CONTRACT_ADDRESS } from "seismic-viem";
 
-const VALIDATOR_MINIMUM_STAKE = 32n;
+const VALIDATOR_MINIMUM_STAKE = parseEther("32");
 
 const depositAbi = [
   {
@@ -81,23 +81,23 @@ export const StakeComponent = ({
         toHex(depositSignatureData.deposit_data_root)
       ] as const;
 
-      // // Try to simulate first to catch specific errors
-      // if (publicClient && walletClient.account) {
-      //   try {
-      //     await publicClient.simulateContract({
-      //       account: walletClient.account,
-      //       address: DEPOSIT_CONTRACT_ADDRESS,
-      //       abi: depositAbi,
-      //       functionName: "deposit",
-      //       args: [...args],
-      //       value: stakeAmount,
-      //     });
-      //   } catch (simError: any) {
-      //     console.warn("Simulation failed:", simError);
-      //     // If simulation fails with the specific error, throw it to be caught below
-      //     throw simError;
-      //   }
-      // }
+      // Try to simulate first to catch specific errors
+      if (publicClient && walletClient.account) {
+        try {
+          await publicClient.simulateContract({
+            account: walletClient.account,
+            address: DEPOSIT_CONTRACT_ADDRESS,
+            abi: depositAbi,
+            functionName: "deposit",
+            args: [...args],
+            value: stakeAmount,
+          });
+        } catch (simError: any) {
+          console.warn("Simulation failed:", simError);
+          // If simulation fails with the specific error, throw it to be caught below
+          throw simError;
+        }
+      }
 
       // Manually calling writeContract to ensure value is passed correctly
       // The helper might be misconfigured or using a different internal call
