@@ -5,6 +5,8 @@ import { useShieldedWallet } from "seismic-react";
 import { type Hex, parseEther, formatEther } from "viem";
 import { DEPOSIT_CONTRACT_ADDRESS } from "seismic-viem";
 
+const VALIDATOR_MINIMUM_STAKE = 32n;
+
 const depositAbi = [
   {
     type: "function",
@@ -76,26 +78,26 @@ export const StakeComponent = ({
         toHex(depositSignatureData.withdrawal_credentials),
         toHex(depositSignatureData.node_signature),
         toHex(depositSignatureData.consensus_signature),
-        toHex(depositSignatureData.deposit_data_root),
+        toHex(depositSignatureData.deposit_data_root)
       ] as const;
 
-      // Try to simulate first to catch specific errors
-      if (publicClient && walletClient.account) {
-        try {
-          await publicClient.simulateContract({
-            account: walletClient.account,
-            address: DEPOSIT_CONTRACT_ADDRESS,
-            abi: depositAbi,
-            functionName: "deposit",
-            args: [...args],
-            value: stakeAmount,
-          });
-        } catch (simError: any) {
-          console.warn("Simulation failed:", simError);
-          // If simulation fails with the specific error, throw it to be caught below
-          throw simError;
-        }
-      }
+      // // Try to simulate first to catch specific errors
+      // if (publicClient && walletClient.account) {
+      //   try {
+      //     await publicClient.simulateContract({
+      //       account: walletClient.account,
+      //       address: DEPOSIT_CONTRACT_ADDRESS,
+      //       abi: depositAbi,
+      //       functionName: "deposit",
+      //       args: [...args],
+      //       value: stakeAmount,
+      //     });
+      //   } catch (simError: any) {
+      //     console.warn("Simulation failed:", simError);
+      //     // If simulation fails with the specific error, throw it to be caught below
+      //     throw simError;
+      //   }
+      // }
 
       // Manually calling writeContract to ensure value is passed correctly
       // The helper might be misconfigured or using a different internal call
@@ -106,6 +108,7 @@ export const StakeComponent = ({
         nodeSignature: args[3],
         consensusSignature: args[4],
         depositDataRoot: args[5],
+        value: VALIDATOR_MINIMUM_STAKE,
       });
 
       setTxHash(hash);
