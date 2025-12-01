@@ -81,7 +81,7 @@ export const StakeComponent = ({
         toHex(depositSignatureData.deposit_data_root)
       ] as const;
 
-      // // Try to simulate first to catch specific errors
+      // Try to simulate first to catch specific errors
       // if (publicClient && walletClient.account) {
       //   console.log("Staking amount:", stakeAmount.toString());
       //   console.log("Validator minimum stake:", VALIDATOR_MINIMUM_STAKE.toString());
@@ -109,7 +109,6 @@ export const StakeComponent = ({
       // Manually calling writeContract to ensure value is passed correctly
       // The helper might be misconfigured or using a different internal call
       const hash = await walletClient.deposit({
-        address: DEPOSIT_CONTRACT_ADDRESS,
         nodePubkey: args[0],
         consensusPubkey: args[1],
         withdrawalCredentials: args[2],
@@ -118,17 +117,7 @@ export const StakeComponent = ({
         depositDataRoot: args[5],
         value: VALIDATOR_MINIMUM_STAKE,
       });
-      console.log("walletClient.deposit exists?", typeof walletClient.deposit);
-      console.log("walletClient methods:", Object.keys(walletClient));
-      // const hash = await walletClient.writeContract({
-      //   address: DEPOSIT_CONTRACT_ADDRESS,
-      //   abi: depositAbi,
-      //   functionName: "deposit",
-      //   args: args,
-      //   value: VALIDATOR_MINIMUM_STAKE,
-      //   // gas: 1000000,
-      // });
-
+      
       setTxHash(hash);
     } catch (err: any) {
       console.error("Deposit failed:", err);
