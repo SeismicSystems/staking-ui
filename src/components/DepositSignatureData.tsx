@@ -83,7 +83,6 @@ export const DepositSignatureData = ({
   depositSignatureData,
   isWalletConnected,
 }: DepositSignatureDataProps) => {
-  console.log(depositSignatureData, "depositSignatureData from dsd component");
   const hexResponse = useMemo(() => {
     return {
       node_pubkey: depositSignatureData.node_pubkey

@@ -1,4 +1,4 @@
-import { Box, Button, Typography, Alert } from "@mui/material";
+import { Box, Button, Typography, Alert, TextField } from "@mui/material";
 import { useState } from "react";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useShieldedWallet } from "seismic-react";
@@ -16,6 +16,9 @@ interface StakeComponentProps {
     deposit_data_root: number[];
   } | null;
   balance: bigint | null;
+  stakeAmount: string;
+  onStakeAmountChange: (amount: string) => void;
+  userAddress: string | undefined;
 }
 
 const toHex = (arr: number[]): Hex => {
@@ -25,26 +28,30 @@ const toHex = (arr: number[]): Hex => {
 export const StakeComponent = ({
   depositSignatureData,
   balance,
+  stakeAmount,
+  onStakeAmountChange,
+  userAddress,
 }: StakeComponentProps) => {
   const { walletClient } = useShieldedWallet();
   const [isLoading, setIsLoading] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-
   const handleDeposit = async () => {
-    if (!walletClient || !depositSignatureData) return;
+    if (!walletClient || !userAddress) return;
 
-    const stakeAmount = parseEther("32");
+    const stakeAmountBigInt = parseEther(stakeAmount);
 
     console.log("Balance:", balance?.toString());
-    console.log("Stake Amount:", stakeAmount.toString());
+    console.log("Stake Amount:", stakeAmountBigInt.toString());
 
     // Add a small buffer for gas (e.g., 0.01 ETH)
-    const minRequiredBalance = stakeAmount + parseEther("0.01");
+    const minRequiredBalance = stakeAmountBigInt + parseEther("0.01");
 
     if (!balance || balance < minRequiredBalance) {
       setError(
-        `Insufficient funds. You need at least 32.01 ETH (32 ETH stake + gas). Your balance: ${
+        `Insufficient funds. You need at least ${
+          parseFloat(stakeAmount) + 0.01
+        } ETH (${stakeAmount} ETH stake + gas). Your balance: ${
           balance ? formatEther(balance) : "0"
         } ETH`
       );
@@ -54,13 +61,25 @@ export const StakeComponent = ({
     setIsLoading(true);
     setError(null);
     try {
+      // Fetch deposit signature with the user's selected amount
+      const amountInGwei = Math.floor(parseFloat(stakeAmount) * 1_000_000_000);
+      const response = await fetch(
+        `/get_deposit_signature/${amountInGwei}/${userAddress}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch deposit signature");
+      }
+
+      const signatureData = await response.json();
+
       const args = [
-        toHex(depositSignatureData.node_pubkey),
-        toHex(depositSignatureData.consensus_pubkey),
-        toHex(depositSignatureData.withdrawal_credentials),
-        toHex(depositSignatureData.node_signature),
-        toHex(depositSignatureData.consensus_signature),
-        toHex(depositSignatureData.deposit_data_root),
+        toHex(signatureData.node_pubkey),
+        toHex(signatureData.consensus_pubkey),
+        toHex(signatureData.withdrawal_credentials),
+        toHex(signatureData.node_signature),
+        toHex(signatureData.consensus_signature),
+        toHex(signatureData.deposit_data_root),
       ] as const;
 
       // Manually calling writeContract to ensure value is passed correctly
@@ -72,7 +91,7 @@ export const StakeComponent = ({
         nodeSignature: args[3],
         consensusSignature: args[4],
         depositDataRoot: args[5],
-        value: VALIDATOR_MINIMUM_STAKE,
+        value: stakeAmountBigInt,
       });
 
       setTxHash(hash);
@@ -102,7 +121,8 @@ export const StakeComponent = ({
         alignItems: "center",
         justifyContent: "center",
         mt: 4,
-        gap: 2,
+        width: "100%",
+        height: "10rem",
       }}
     >
       {isLoading ? (
@@ -117,18 +137,39 @@ export const StakeComponent = ({
           {error && (
             <Alert
               severity="error"
-              sx={{ maxWidth: "400px", wordBreak: "break-word" }}
+              sx={{ maxWidth: "400px", wordBreak: "break-word", mb: 2 }}
             >
               {error}
             </Alert>
           )}
+          <TextField
+            label="Amount to Stake (ETH)"
+            type="number"
+            value={stakeAmount}
+            onChange={(e) => onStakeAmountChange(e.target.value)}
+            inputProps={{
+              min: "0",
+              step: "0.01",
+            }}
+            sx={{
+              mb: 2,
+              width: "100%",
+              "& .MuiOutlinedInput-root": {
+                borderRadius: 2,
+              },
+            }}
+            helperText="Minimum: 32 ETH for validator"
+          />
           <Button
+            sx={{ width: "100%", height: "100%", borderRadius: 5 }}
             variant="contained"
             size="large"
             onClick={handleDeposit}
             disabled={!walletClient}
           >
-            Stake 32 ETH
+            <Typography sx={{ fontSize: "1.2rem", fontWeight: "bold" }}>
+              Stake {stakeAmount} ETH
+            </Typography>
           </Button>
         </>
       )}

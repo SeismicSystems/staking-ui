@@ -18,6 +18,7 @@ export const Home = () => {
     consensus_signature: number[];
     deposit_data_root: number[];
   } | null>(null);
+  const [stakeAmount, setStakeAmount] = useState<string>("32");
   const theme = useTheme();
   useEffect(() => {
     const fetchPublicKeys = async () => {
@@ -32,8 +33,10 @@ export const Home = () => {
   useEffect(() => {
     const getDepositSignature = async () => {
       if (!address) return;
+      // Fetch with default 32 ETH just for initial display
+      const amountInGwei = 32_000_000_000;
       const response = await fetch(
-        `/get_deposit_signature/32000000000/${address}`
+        `/get_deposit_signature/${amountInGwei}/${address}`
       );
       console.log("response", response);
       const data = await response.json();
@@ -94,8 +97,7 @@ export const Home = () => {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              pb: 2,
-              pt: 2,
+              p: 2,
               backgroundColor: theme.palette.background.paper,
               borderRadius: 5,
               width: "50%",
@@ -104,10 +106,20 @@ export const Home = () => {
             <ConnectButton accountStatus="full" showBalance={false} />
             <Typography
               variant="body2"
-              sx={{ color: theme.palette.primary.main, mt: 1 }}
+              sx={{
+                color: theme.palette.primary.main,
+                mt: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              Balance:{" "}
-              {balance ? Number(formatEther(balance)).toFixed(4) : "0.0000"} ETH
+              <div>Balance: </div>
+              <div>
+                {balance ? Number(formatEther(balance)).toFixed(4) : "0.0000"}{" "}
+                ETH
+              </div>
             </Typography>
           </Box>
           <Box
@@ -135,6 +147,9 @@ export const Home = () => {
             <StakeComponent
               depositSignatureData={depositSignatureData}
               balance={balance}
+              stakeAmount={stakeAmount}
+              onStakeAmountChange={setStakeAmount}
+              userAddress={address}
             />
           </Box>
         </Box>

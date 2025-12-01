@@ -44,7 +44,6 @@ export const useClient = () => {
             address: connectedAddress(),
         })
     }, [connectedAddress, pubClient])
-    console.log(walletAddress);
 
     return {
         walletAddress,
