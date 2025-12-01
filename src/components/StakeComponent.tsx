@@ -3,26 +3,8 @@ import { useState } from "react";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useShieldedWallet } from "seismic-react";
 import { type Hex, parseEther, formatEther } from "viem";
-import { DEPOSIT_CONTRACT_ADDRESS } from "seismic-viem";
 
 const VALIDATOR_MINIMUM_STAKE = parseEther("32");
-
-const depositAbi = [
-  {
-    type: "function",
-    name: "deposit",
-    inputs: [
-      { name: "node_pubkey", type: "bytes", internalType: "bytes" },
-      { name: "consensus_pubkey", type: "bytes", internalType: "bytes" },
-      { name: "withdrawal_credentials", type: "bytes", internalType: "bytes" },
-      { name: "node_signature", type: "bytes", internalType: "bytes" },
-      { name: "consensus_signature", type: "bytes", internalType: "bytes" },
-      { name: "deposit_data_root", type: "bytes32", internalType: "bytes32" },
-    ],
-    outputs: [],
-    stateMutability: "payable",
-  },
-] as const;
 
 interface StakeComponentProps {
   depositSignatureData: {
@@ -44,7 +26,7 @@ export const StakeComponent = ({
   depositSignatureData,
   balance,
 }: StakeComponentProps) => {
-  const { walletClient, publicClient } = useShieldedWallet();
+  const { walletClient } = useShieldedWallet();
   const [isLoading, setIsLoading] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -78,33 +60,8 @@ export const StakeComponent = ({
         toHex(depositSignatureData.withdrawal_credentials),
         toHex(depositSignatureData.node_signature),
         toHex(depositSignatureData.consensus_signature),
-        toHex(depositSignatureData.deposit_data_root)
+        toHex(depositSignatureData.deposit_data_root),
       ] as const;
-
-      // Try to simulate first to catch specific errors
-      // if (publicClient && walletClient.account) {
-      //   console.log("Staking amount:", stakeAmount.toString());
-      //   console.log("Validator minimum stake:", VALIDATOR_MINIMUM_STAKE.toString());
-      //   console.log("publicClient.rpcUrl", publicClient.transport.url);
-      //   console.log("DEPOSIT_CONTRACT_ADDRESS", DEPOSIT_CONTRACT_ADDRESS);
-      //   console.log("walletClient.account", walletClient.account);
-      //   try {
-      //     console.log("Simulating deposit with value:", stakeAmount.toString());
-      //     console.log("Args:", args);
-      //     await publicClient.simulateContract({
-      //       account: walletClient.account,
-      //       address: DEPOSIT_CONTRACT_ADDRESS,
-      //       abi: depositAbi,
-      //       functionName: "deposit",
-      //       args: [...args],
-      //       value: stakeAmount,
-      //     });
-      //   } catch (simError: any) {
-      //     console.warn("Simulation failed:", simError);
-      //     // If simulation fails with the specific error, throw it to be caught below
-      //     throw simError;
-      //   }
-      // }
 
       // Manually calling writeContract to ensure value is passed correctly
       // The helper might be misconfigured or using a different internal call
@@ -117,7 +74,7 @@ export const StakeComponent = ({
         depositDataRoot: args[5],
         value: VALIDATOR_MINIMUM_STAKE,
       });
-      
+
       setTxHash(hash);
     } catch (err: any) {
       console.error("Deposit failed:", err);
