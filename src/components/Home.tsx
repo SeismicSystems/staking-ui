@@ -62,48 +62,51 @@ export const Home = () => {
           justifyContent: "center",
         }}
       >
-        <Box sx={{ mb: 2 }}>
+        <Box className="logo-container" sx={{ mb: 2 }}>
           <img
             src="/seis_logo.png"
             alt="Seismic Logo"
             style={{ height: "50px" }}
           />
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            pb: 2,
-            pt: 4,
-          }}
-        >
-          <ConnectButton accountStatus="full" showBalance={true} />
-          <Typography
-            variant="body2"
-            sx={{ color: theme.palette.primary.main, mt: 1 }}
+        <Box className="glass" sx={{ p: 4 }}>
+          <Box
+            className="connect-button-container"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              pb: 2,
+              pt: 4,
+            }}
           >
-            Balance: {balance ? formatEther(balance) : "0"} ETH
-          </Typography>
-        </Box>
-        <DepositSignatureData
-          isWalletConnected={!!address}
-          depositSignatureData={
-            depositSignatureData || {
-              node_pubkey: [],
-              consensus_pubkey: [],
-              withdrawal_credentials: [],
-              node_signature: [],
-              consensus_signature: [],
-              deposit_data_root: [],
+            <ConnectButton accountStatus="full" showBalance={false} />
+            <Typography
+              variant="body2"
+              sx={{ color: theme.palette.primary.main, mt: 1 }}
+            >
+              Balance: {balance ? formatEther(balance) : "0"} ETH
+            </Typography>
+          </Box>
+          <DepositSignatureData
+            isWalletConnected={!!address}
+            depositSignatureData={
+              depositSignatureData || {
+                node_pubkey: [],
+                consensus_pubkey: [],
+                withdrawal_credentials: [],
+                node_signature: [],
+                consensus_signature: [],
+                deposit_data_root: [],
+              }
             }
-          }
-        />
-        <StakeComponent
-          depositSignatureData={depositSignatureData}
-          balance={balance}
-        />
+          />
+          <StakeComponent
+            depositSignatureData={depositSignatureData}
+            balance={balance}
+          />
+        </Box>
       </Box>
     </div>
   );

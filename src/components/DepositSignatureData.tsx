@@ -41,7 +41,7 @@ const DataRow = ({ label, value }: { label: string; value: string }) => {
         gap: 1,
         backgroundColor: theme.palette.background.paper,
         borderRadius: 5,
-        width: { xs: "100%", sm: "100%", md: "15dvw" },
+        width: { xs: "100%", sm: "100%", md: "20dvw", lg: "15dvw" },
         padding: 2, // Added a little padding to make it look better with background
       }}
     >

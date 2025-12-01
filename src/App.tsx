@@ -8,13 +8,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@rainbow-me/rainbowkit/styles.css";
 import { mainnet } from "wagmi/chains";
 import { Home } from "./components/Home";
-import { sanvil, seismicDevnet2 } from "seismic-react/rainbowkit";
+import { sanvil, localSeismicDevnet } from "seismic-react/rainbowkit";
 import { CHAIN_ID } from "./hooks/useContract";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { theme } from "./theme";
 import { ShieldedWalletProvider } from "seismic-react";
 
-const SUPPORTED_CHAINS = [sanvil, seismicDevnet2];
+const SUPPORTED_CHAINS = [sanvil, localSeismicDevnet];
 const CHAINS = SUPPORTED_CHAINS.filter((c) => c.id === CHAIN_ID);
 
 const config = getDefaultConfig({
