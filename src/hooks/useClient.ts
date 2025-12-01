@@ -2,8 +2,6 @@ import { useCallback, useEffect, useState } from "react"
 import type { Hex } from "viem"
 import { useShieldedWallet } from "seismic-react"
 
-import { type ShieldedPublicClient } from "seismic-viem"
-
 export const useClient = () => {
     const [loaded, setLoaded] = useState(false)
 
@@ -22,28 +20,15 @@ export const useClient = () => {
         setWalletAddress(walletClient.account.address)
     }, [loaded, walletClient])
 
-    const connectedAddress = useCallback(() => {
-
-        if (!walletAddress) {
-            throw new Error('Wallet address not found')
-        }
-        return walletAddress
-    }, [walletAddress])
-
-
-    const pubClient = useCallback((): ShieldedPublicClient => {
-        if (!publicClient) {
-            throw new Error('Public client not found')
-        }
-        return publicClient
-    }, [publicClient])
-
     const balanceEthWallet = useCallback(async (): Promise<bigint> => {
+        if (!publicClient || !walletAddress) {
+            return BigInt(0)
+        }
 
-        return await pubClient().getBalance({
-            address: connectedAddress(),
+        return await publicClient.getBalance({
+            address: walletAddress,
         })
-    }, [connectedAddress, pubClient])
+    }, [publicClient, walletAddress])
 
     return {
         walletAddress,

@@ -38,7 +38,6 @@ export const Home = () => {
       const response = await fetch(
         `/get_deposit_signature/${amountInGwei}/${address}`
       );
-      console.log("response", response);
       const data = await response.json();
       setDepositSignatureData(data);
     };
@@ -111,8 +110,7 @@ export const Home = () => {
             }}
           >
             <ConnectButton accountStatus="full" showBalance={false} />
-            <Typography
-              variant="body2"
+            <Box
               sx={{
                 color: theme.palette.primary.main,
                 mt: 1,
@@ -122,12 +120,34 @@ export const Home = () => {
                 justifyContent: "center",
               }}
             >
-              <div>Balance: </div>
-              <div>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: theme.palette.primary.main,
+                  mt: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                Balance:{" "}
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: theme.palette.primary.main,
+                  mt: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
                 {balance ? Number(formatEther(balance)).toFixed(4) : "0.0000"}{" "}
                 ETH
-              </div>
-            </Typography>
+              </Typography>
+            </Box>
           </Box>
           <Box
             sx={{
