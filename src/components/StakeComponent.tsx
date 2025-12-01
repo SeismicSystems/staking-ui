@@ -19,6 +19,7 @@ interface StakeComponentProps {
   stakeAmount: string;
   onStakeAmountChange: (amount: string) => void;
   userAddress: string | undefined;
+  onBalanceUpdate: () => Promise<void>;
 }
 
 const toHex = (arr: number[]): Hex => {
@@ -31,8 +32,9 @@ export const StakeComponent = ({
   stakeAmount,
   onStakeAmountChange,
   userAddress,
+  onBalanceUpdate,
 }: StakeComponentProps) => {
-  const { walletClient } = useShieldedWallet();
+  const { walletClient, publicClient } = useShieldedWallet();
   const [isLoading, setIsLoading] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -95,6 +97,12 @@ export const StakeComponent = ({
       });
 
       setTxHash(hash);
+
+      // Wait for the transaction to be confirmed before refreshing balance
+      if (publicClient) {
+        await publicClient.waitForTransactionReceipt({ hash });
+        await onBalanceUpdate();
+      }
     } catch (err: any) {
       console.error("Deposit failed:", err);
       // Extract the most relevant error message

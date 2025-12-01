@@ -47,15 +47,22 @@ export const Home = () => {
   const { balanceEthWallet } = useClient();
   const [balance, setBalance] = useState<bigint | null>(null);
 
-  useEffect(() => {
+  const refreshBalance = async () => {
     if (!address) {
       setBalance(null);
       return;
     }
-    balanceEthWallet()
-      .then((b) => setBalance(b))
-      .catch((e) => console.error("Error fetching balance", e));
-  }, [balanceEthWallet]);
+    try {
+      const b = await balanceEthWallet();
+      setBalance(b);
+    } catch (e) {
+      console.error("Error fetching balance", e);
+    }
+  };
+
+  useEffect(() => {
+    refreshBalance();
+  }, [address, balanceEthWallet]);
 
   return (
     <div>
@@ -150,6 +157,7 @@ export const Home = () => {
               stakeAmount={stakeAmount}
               onStakeAmountChange={setStakeAmount}
               userAddress={address}
+              onBalanceUpdate={refreshBalance}
             />
           </Box>
         </Box>
