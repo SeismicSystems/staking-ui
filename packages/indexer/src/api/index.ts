@@ -14,7 +14,7 @@ app.use("/graphql", graphql({ db, schema }));
 // Get deposits for a specific user address
 app.get("/deposits/:address", async (c) => {
   const address = c.req.param("address") as `0x${string}`;
-  
+
   try {
     // Get depositor stats
     const depositorStats = await db
@@ -45,7 +45,7 @@ app.get("/deposits/:address", async (c) => {
         success: false,
         error: "Failed to fetch deposits",
       },
-      500
+      500,
     );
   }
 });
@@ -56,7 +56,7 @@ app.get("/stats", async (c) => {
     const stats = await db
       .select()
       .from(schema.deposit_stats)
-      .where(eq(schema.deposit_stats.id, 'global'))
+      .where(eq(schema.deposit_stats.id, "global"))
       .limit(1);
 
     return c.json({
@@ -70,7 +70,7 @@ app.get("/stats", async (c) => {
         success: false,
         error: "Failed to fetch stats",
       },
-      500
+      500,
     );
   }
 });

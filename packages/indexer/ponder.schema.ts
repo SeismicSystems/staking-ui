@@ -1,6 +1,6 @@
-import { onchainTable, index } from 'ponder';
+import { onchainTable, index } from "ponder";
 
-export const depositors = onchainTable('depositors', (t) => ({
+export const depositors = onchainTable("depositors", (t) => ({
   address: t.hex().primaryKey(),
   total_deposits: t.bigint().notNull(),
   total_amount: t.bigint().notNull(),
@@ -11,7 +11,7 @@ export const depositors = onchainTable('depositors', (t) => ({
 }));
 
 export const deposits = onchainTable(
-  'deposits',
+  "deposits",
   (t) => ({
     id: t.text().primaryKey(), // UUID
     node_pubkey: t.hex().notNull(),
@@ -29,7 +29,7 @@ export const deposits = onchainTable(
 
     // Derived fields
     depositor: t.hex().notNull(), // extracted from withdrawal_credentials if 0x01 type
-    
+
     created_at: t.timestamp().notNull(),
   }),
   (table) => ({
@@ -37,10 +37,10 @@ export const deposits = onchainTable(
     depositor_idx: index().on(table.depositor),
     block_timestamp_idx: index().on(table.block_timestamp),
     deposit_index_idx: index().on(table.deposit_index),
-  })
+  }),
 );
 
-export const deposit_stats = onchainTable('deposit_stats', (t) => ({
+export const deposit_stats = onchainTable("deposit_stats", (t) => ({
   id: t.text().primaryKey(), // 'global'
   total_deposits: t.bigint().notNull(),
   total_amount: t.bigint().notNull(),
