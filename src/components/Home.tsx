@@ -22,7 +22,7 @@ export const Home = () => {
   const theme = useTheme();
   useEffect(() => {
     const fetchPublicKeys = async () => {
-      const response = await fetch("/summit/get_public_keys");
+      const response = await fetch("/get_public_keys");
       const data = await response.json();
       setConsensusPublicKeys(data.consensus);
       setNodePublicKeys(data.node);
@@ -36,7 +36,7 @@ export const Home = () => {
       // Fetch with default 32 ETH just for initial display
       const amountInGwei = 32_000_000_000;
       const response = await fetch(
-        `/summit/get_deposit_signature/${amountInGwei}/${address}`
+        `/get_deposit_signature/${amountInGwei}/${address}`
       );
       const data = await response.json();
       setDepositSignatureData(data);
@@ -78,7 +78,7 @@ export const Home = () => {
       >
         <Box className="logo-container" sx={{ mb: 2 }}>
           <img
-            src="/staking/seis_logo.png"
+            src="/seis_logo.png"
             alt="Seismic Logo"
             style={{ height: "50px" }}
           />

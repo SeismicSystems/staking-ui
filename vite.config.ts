@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react-swc'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/staking/',
   plugins: [react()],
   server: {
     proxy: {
@@ -11,11 +12,7 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/summit/, ''),
       },
-      '/rpc': {
-        target: 'https://az-8.seismictest.net',
-        changeOrigin: true,
-        secure: true,
-      },
+
     },
   },
 })
