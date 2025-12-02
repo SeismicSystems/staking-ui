@@ -30,7 +30,10 @@ const Providers: React.FC<PropsWithChildren<{ config: Config }>> = ({
   children,
 }) => {
   const publicChain = CHAINS[0];
-  const publicTransport = http(publicChain.rpcUrls.default.http[0]);
+  const rpcUrl = import.meta.env.PROD
+    ? 'https://az-8.seismictest.net/rpc'
+    : publicChain.rpcUrls.default.http[0];
+  const publicTransport = http(rpcUrl);
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={client}>
