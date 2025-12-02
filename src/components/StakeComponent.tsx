@@ -64,7 +64,7 @@ export const StakeComponent = ({
       // Fetch deposit signature with the user's selected amount
       const amountInGwei = Math.floor(parseFloat(stakeAmount) * 1_000_000_000);
       const response = await fetch(
-        `/get_deposit_signature/${amountInGwei}/${userAddress}`
+        `/summit/get_deposit_signature/${amountInGwei}/${userAddress}`
       );
 
       if (!response.ok) {
