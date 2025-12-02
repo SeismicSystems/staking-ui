@@ -31,7 +31,7 @@ const Providers: React.FC<PropsWithChildren<{ config: Config }>> = ({
 }) => {
   const publicChain = CHAINS[0];
   const rpcUrl = import.meta.env.PROD
-    ? 'https://az-8.seismictest.net/rpc'
+    ? "/rpc"
     : publicChain.rpcUrls.default.http[0];
   const publicTransport = http(rpcUrl);
   return (
