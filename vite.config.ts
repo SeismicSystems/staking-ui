@@ -12,6 +12,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/summit/, ''),
       },
+      '/rpc': {
+        target: 'https://az-8.seismictest.net',
+        changeOrigin: true,
+        secure: true,
+      },
     },
   },
 })
