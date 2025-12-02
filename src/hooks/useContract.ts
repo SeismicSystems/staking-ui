@@ -9,5 +9,5 @@ const parseChainId = (): number => {
     return parseInt(chainId)
 }
 
-export const CHAIN_ID = parseChainId()
+export const CHAIN_ID = 5124 // parseChainId()
 
