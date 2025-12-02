@@ -17,7 +17,7 @@ const CHAINS = SUPPORTED_CHAINS.filter((c) => c.id === CHAIN_ID);
 
 const config = getDefaultConfig({
   appName: "Staking UI",
-  projectId: import.meta.env.VITE_PROJECT_ID,
+  projectId: "0983a6473d37a95e7d569f091435c383",
   // @ts-expect-error: this is fine
   chains: CHAINS,
   ssr: false,
