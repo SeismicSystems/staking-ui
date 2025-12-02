@@ -1,23 +1,38 @@
 import { createConfig } from "ponder";
+import dotenv from "dotenv";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import { depositContractAbi } from "./abis/DepositContractAbi";
+import { Address } from "viem";
 
-import { PrimitiveManagerAbi } from "./abis/PrimitiveManagerAbi";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+dotenv.config({ path: join(__dirname, "../../.env") });
+
+const DEPOSIT_CONTRACT_ADDRESS: Address =
+  "0x00000000219ab540356cBB839Cbe05303d7705Fa";
 
 export default createConfig({
   chains: {
-    mainnet: {
-      id: 1,
-      rpc: process.env.PONDER_RPC_URL_1,
+    seismic: { // TODO: decide on better naming
+      id: 5124,
+      rpc: process.env.VITE_RPC_URL // http://localhost:8545 for local reth
+    },
+  },
+  database: {
+    kind: "postgres",
+    connectionString: process.env.INDEXER_DATABASE_URL,
+    poolConfig: {
+      max: 60,
     },
   },
   contracts: {
-    PrimitiveManager: {
-      chain: "mainnet",
-      abi: PrimitiveManagerAbi,
-      address: "0x54522dA62a15225C95b01bD61fF58b866C50471f",
-      startBlock: 14438081,
-      filter: {
-        event: "Swap",
-      },
+    DepositContract: {
+      chain: "seismic",
+      abi: depositContractAbi,
+      address: DEPOSIT_CONTRACT_ADDRESS,
+      startBlock: 0,
     },
   },
 });

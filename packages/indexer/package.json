@@ -12,8 +12,11 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "ponder": "^0.15.12",
+    "dotenv": "^17.2.3",
     "hono": "^4.5.0",
+    "ponder": "^0.15.12",
+    "prettier": "^3.7.3",
+    "seismic-viem": "^1.0.52",
     "viem": "^2.21.3"
   },
   "devDependencies": {
