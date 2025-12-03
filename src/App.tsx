@@ -31,11 +31,6 @@ const Providers: React.FC<PropsWithChildren<{ config: Config }>> = ({
 }) => {
   const { data, isFetched } = useConnectorClient({ config })
   const publicTransport = isFetched && data && data.transport ? data.transport : undefined
-  // const publicChain = CHAINS[0];
-  // const rpcUrl = import.meta.env.PROD
-  // ? "/rpc"
-  // : publicChain.rpcUrls.default.http[0];
-  // const publicTransport = http(rpcUrl);
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={client}>
@@ -47,7 +42,6 @@ const Providers: React.FC<PropsWithChildren<{ config: Config }>> = ({
               config={config}
               options={{
                 publicTransport,
-                // publicChain,
               }}
             >
               {children}
