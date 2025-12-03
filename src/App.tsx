@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 import "./App.css";
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { WagmiProvider, http, type Config } from "wagmi";
+import { WagmiProvider, http, useConnectorClient, type Config } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@rainbow-me/rainbowkit/styles.css";
 import { Home } from "./components/Home";
@@ -29,6 +29,8 @@ const Providers: React.FC<PropsWithChildren<{ config: Config }>> = ({
   config,
   children,
 }) => {
+  const { data, isFetched } = useConnectorClient({ config })
+  const publicTransport = isFetched && data && data.transport ? data.transport : undefined
   // const publicChain = CHAINS[0];
   // const rpcUrl = import.meta.env.PROD
   // ? "/rpc"
@@ -43,10 +45,10 @@ const Providers: React.FC<PropsWithChildren<{ config: Config }>> = ({
             {" "}
             <ShieldedWalletProvider
               config={config}
-              // options={{
-              //   publicTransport,
-              //   publicChain,
-              // }}
+              options={{
+                publicTransport,
+                // publicChain,
+              }}
             >
               {children}
             </ShieldedWalletProvider>
