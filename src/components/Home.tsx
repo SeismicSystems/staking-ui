@@ -78,7 +78,7 @@ export const Home = () => {
       >
         <Box className="logo-container" sx={{ mb: 2 }}>
           <img
-            src="/seis_logo.png"
+            src="/staking/seis_logo.png"
             alt="Seismic Logo"
             style={{ height: "50px" }}
           />
