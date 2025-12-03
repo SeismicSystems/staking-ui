@@ -4,13 +4,15 @@
   "type": "module",
   "scripts": {
     "dev": "ponder dev --schema ponder_deposits",
-    "drop-schema": "bun run src/drop-schema.ts",
     "start": "ponder start --schema ponder_deposits",
     "db": "ponder db",
     "codegen": "ponder codegen",
-    "serve": "ponder serve",
+    "serve": "ponder serve --schema ponder_deposits",
     "lint": "eslint .",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "create-schema": "bun run src/create-schema.ts",
+    "drop-schema": "bun run src/drop-schema.ts",
+    "reset-schema": "bun run src/reset-schema.ts"
   },
   "dependencies": {
     "dotenv": "^17.2.3",

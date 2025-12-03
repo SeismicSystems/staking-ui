@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "indexer:dev": "cd packages/indexer && bun run dev",
+    "indexer:create": "cd packages/indexer && bun run create-schema",
+    "indexer:drop": "cd packages/indexer && bun run drop-schema",
+    "indexer:reset": "cd packages/indexer && bun run reset-schema"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
