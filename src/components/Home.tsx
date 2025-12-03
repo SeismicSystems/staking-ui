@@ -6,7 +6,17 @@ import { DepositSignatureData } from "./DepositSignatureData";
 import { Box, Typography, useTheme } from "@mui/material";
 import { formatEther } from "viem";
 import { StakeComponent } from "../components/StakeComponent";
-export const Home = () => {
+import TransportURISetter from "./TransportURISetter";
+
+interface HomeProps {
+  publicTransportURI: string;
+  setPublicTransportURI: (uri: string) => void;
+}
+
+export const Home = ({
+  publicTransportURI,
+  setPublicTransportURI,
+}: HomeProps) => {
   const { address } = useAccount();
   const [consensusPublicKeys, setConsensusPublicKeys] = useState<string[]>([]);
   const [nodePublicKeys, setNodePublicKeys] = useState<string[]>([]);
@@ -78,7 +88,7 @@ export const Home = () => {
       >
         <Box className="logo-container" sx={{ mb: 2 }}>
           <img
-            src="/seis_logo.png"
+            src="/staking/seis_logo.png"
             alt="Seismic Logo"
             style={{ height: "50px" }}
           />
@@ -110,6 +120,10 @@ export const Home = () => {
             }}
           >
             <ConnectButton accountStatus="full" showBalance={false} />
+            <TransportURISetter
+              publicTransportURI={publicTransportURI}
+              setPublicTransportURI={setPublicTransportURI}
+            />
             <Box
               sx={{
                 color: theme.palette.primary.main,

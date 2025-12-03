@@ -40,7 +40,7 @@ export const LoadingSpinner = ({ size = 60 }: LoadingSpinnerProps) => {
 
         {/* Base logo - static */}
         <img
-          src="/main.png"
+          src="/staking/main.png"
           alt="Seismic Logo"
           style={{
             height: size,

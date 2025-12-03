@@ -11,26 +11,23 @@ import { CHAIN_ID } from "./hooks/useContract";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { theme } from "./theme";
 import { ShieldedWalletProvider } from "seismic-react";
-
+import { useEffect, useState } from "react";
 const SUPPORTED_CHAINS = [sanvil, localSeismicDevnet];
 const CHAINS = SUPPORTED_CHAINS.filter((c) => c.id === CHAIN_ID);
 
 const config = getDefaultConfig({
   appName: "Staking UI",
-  projectId: import.meta.env.VITE_PROJECT_ID,
+  projectId: "0983a6473d37a95e7d569f091435c383",
   // @ts-expect-error: this is fine
   chains: CHAINS,
   ssr: false,
 });
 
 const client = new QueryClient();
-
-const Providers: React.FC<PropsWithChildren<{ config: Config }>> = ({
-  config,
-  children,
-}) => {
-  const publicChain = CHAINS[0];
-  const publicTransport = http(publicChain.rpcUrls.default.http[0]);
+const Providers: React.FC<
+  PropsWithChildren<{ config: Config; publicTransportURI: string }>
+> = ({ config, publicTransportURI, children }) => {
+  const publicTransport = http(publicTransportURI);
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={client}>
@@ -42,7 +39,7 @@ const Providers: React.FC<PropsWithChildren<{ config: Config }>> = ({
               config={config}
               options={{
                 publicTransport,
-                publicChain,
+                // publicChain,
               }}
             >
               {children}
@@ -55,10 +52,26 @@ const Providers: React.FC<PropsWithChildren<{ config: Config }>> = ({
 };
 
 function App() {
+  const [publicTransportURI, setPublicTransportURI] = useState<string>(
+    "https://az-1.seismictest.net/rpc"
+  );
+
+  useEffect(() => {
+    localStorage.setItem("publicTransportURI", publicTransportURI);
+    console.log("publicTransportURI", publicTransportURI);
+  }, [publicTransportURI, setPublicTransportURI]);
+
   return (
     <>
-      <Providers config={config}>
-        <Home />
+      <Providers
+        key={publicTransportURI}
+        config={config}
+        publicTransportURI={publicTransportURI}
+      >
+        <Home
+          publicTransportURI={publicTransportURI}
+          setPublicTransportURI={setPublicTransportURI}
+        />
       </Providers>
     </>
   );
