@@ -6,7 +6,7 @@ export const useClient = () => {
     const [loaded, setLoaded] = useState(false)
 
     const [walletAddress, setWalletAddress] = useState<Hex | null>(null)
-    const { walletClient, publicClient } = useShieldedWallet()
+    const { walletClient } = useShieldedWallet()
 
     useEffect(() => {
         setLoaded(true)
@@ -21,14 +21,14 @@ export const useClient = () => {
     }, [loaded, walletClient])
 
     const balanceEthWallet = useCallback(async (): Promise<bigint> => {
-        if (!publicClient || !walletAddress) {
+        if (!walletClient || !walletAddress) {
             return BigInt(0)
         }
 
-        return await publicClient.getBalance({
+        return await walletClient.getBalance({
             address: walletAddress,
         })
-    }, [publicClient, walletAddress])
+    }, [walletClient, walletAddress])
 
     return {
         walletAddress,
