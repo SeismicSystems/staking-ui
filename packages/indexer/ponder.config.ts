@@ -20,7 +20,7 @@ export default createConfig({
     seismic: {
       // TODO: decide on better naming
       id: 5124,
-      rpc: process.env.VITE_RPC_URL, // http://localhost:8545 for local reth
+      rpc: process.env.PROXY_SERVER_URL, // url for the `seismic-reth` proxy server
     },
   },
   database: {
