@@ -13,13 +13,11 @@ dotenv.config({ path: join(__dirname, "../../../.env") });
 async function resetSchema(schema: string, pool: Pool) {
   console.log("Resetting schema", schema);
   try {
-    // Drop schema
     await dropSchema(schema, pool);
 
-    // Create schema
     await createSchema(schema, pool);
 
-    console.log(`\n✓ Schema ${schema} has been reset successfully`);
+    console.log(`\n Schema ${schema} has been reset successfully`);
   } catch (error) {
     console.error("Error resetting schema:", error);
     throw error;

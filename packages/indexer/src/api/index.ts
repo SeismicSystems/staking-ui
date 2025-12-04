@@ -32,7 +32,9 @@ app.get("/deposits/:address", async (c) => {
       conditions.push(gte(schema.deposits.block_timestamp, daysAgo));
     } else {
       if (fromDate) {
-        conditions.push(gte(schema.deposits.block_timestamp, new Date(fromDate)));
+        conditions.push(
+          gte(schema.deposits.block_timestamp, new Date(fromDate)),
+        );
       }
       if (toDate) {
         conditions.push(lte(schema.deposits.block_timestamp, new Date(toDate)));
@@ -40,8 +42,17 @@ app.get("/deposits/:address", async (c) => {
     }
 
     const [depositorStats, deposits] = await Promise.all([
-      db.select().from(schema.depositors).where(eq(schema.depositors.address, address)).limit(1),
-      db.select().from(schema.deposits).where(and(...conditions)).orderBy(desc(schema.deposits.block_timestamp)).limit(limit),
+      db
+        .select()
+        .from(schema.depositors)
+        .where(eq(schema.depositors.address, address))
+        .limit(1),
+      db
+        .select()
+        .from(schema.deposits)
+        .where(and(...conditions))
+        .orderBy(desc(schema.deposits.block_timestamp))
+        .limit(limit),
     ]);
 
     return c.json({
