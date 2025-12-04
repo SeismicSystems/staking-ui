@@ -119,6 +119,11 @@ ponder.on("DepositContract:DepositEvent", async ({ event, context }) => {
     .where(eq(schema.depositors.address, depositor))
     .limit(1);
 
+  const isNewDepositor =
+    depositorStats.length && depositorStats[0]
+      ? depositorStats[0].total_deposits === 0n
+      : true;
+
   if (depositorStats.length && depositorStats[0]) {
     await db.update(schema.depositors, { address: depositor }).set({
       total_deposits: depositorStats[0].total_deposits + 1n,
@@ -141,12 +146,19 @@ ponder.on("DepositContract:DepositEvent", async ({ event, context }) => {
     .limit(1);
 
   if (stats.length && stats[0]) {
-    await db.update(schema.deposit_stats, { id: "global" }).set({
+    // Update existing stats
+    const updates: any = {
       total_deposits: stats[0].total_deposits + 1n,
       total_amount: stats[0].total_amount + amount,
       last_updated: new Date(Number(event.block.timestamp) * 1000),
       updated_at: new Date(Number(event.block.timestamp) * 1000),
-    });
+    };
+
+    if (isNewDepositor) {
+      updates.unique_depositors = stats[0].unique_depositors + 1;
+    }
+
+    await db.update(schema.deposit_stats, { id: "global" }).set(updates);
   } else {
     // Initialize stats on first deposit
     await db
@@ -161,25 +173,5 @@ ponder.on("DepositContract:DepositEvent", async ({ event, context }) => {
         updated_at: new Date(Number(event.block.timestamp) * 1000),
       })
       .onConflictDoNothing();
-  }
-
-  // Check if this is a new unique depositor
-  const isNewDepositor =
-    depositorStats.length && depositorStats[0]
-      ? depositorStats[0].total_deposits === 0n
-      : true;
-
-  if (isNewDepositor) {
-    const currentStats = await db.sql
-      .select({ unique_depositors: schema.deposit_stats.unique_depositors })
-      .from(schema.deposit_stats)
-      .where(eq(schema.deposit_stats.id, "global"))
-      .limit(1);
-
-    if (currentStats.length && currentStats[0]) {
-      await db.update(schema.deposit_stats, { id: "global" }).set({
-        unique_depositors: currentStats[0].unique_depositors + 1,
-      });
-    }
   }
 });
