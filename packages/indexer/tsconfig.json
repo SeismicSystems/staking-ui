@@ -19,7 +19,13 @@
     "target": "ES2022",
 
     // Skip type checking for node modules
-    "skipLibCheck": true
+    "skipLibCheck": true,
+
+    // Path mapping for absolute imports
+    "baseUrl": ".",
+    "paths": {
+      "@/indexer/*": ["./src/*"]
+    }
   },
   "include": ["./**/*.ts"],
   "exclude": ["node_modules"]

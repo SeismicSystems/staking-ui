@@ -7,6 +7,8 @@ import schema from "ponder:schema";
 import { fileURLToPath } from "url";
 import { type Hex } from "viem";
 
+import type { UpdateStats } from "@/indexer/types";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -147,9 +149,10 @@ ponder.on("DepositContract:DepositEvent", async ({ event, context }) => {
 
   if (stats.length && stats[0]) {
     // Update existing stats
-    const updates: any = {
+    const updates: UpdateStats = {
       total_deposits: stats[0].total_deposits + 1n,
       total_amount: stats[0].total_amount + amount,
+      unique_depositors: stats[0].unique_depositors,
       last_updated: new Date(Number(event.block.timestamp) * 1000),
       updated_at: new Date(Number(event.block.timestamp) * 1000),
     };
