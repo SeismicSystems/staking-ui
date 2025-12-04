@@ -24,7 +24,8 @@
     // Path mapping for absolute imports
     "baseUrl": ".",
     "paths": {
-      "@/indexer/*": ["./src/*"]
+      "@/indexer/*": ["./src/*"], 
+      "@/indexer/abis/*": ["./abis/*"]
     }
   },
   "include": ["./**/*.ts"],
