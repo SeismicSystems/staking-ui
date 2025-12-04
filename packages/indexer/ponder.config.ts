@@ -13,6 +13,8 @@ dotenv.config({ path: join(__dirname, "../../.env") });
 const DEPOSIT_CONTRACT_ADDRESS: Address =
   "0x00000000219ab540356cBB839Cbe05303d7705Fa";
 
+console.log("rpc url", process.env.VITE_RPC_URL);
+
 export default createConfig({
   chains: {
     seismic: {
