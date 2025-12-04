@@ -62,6 +62,7 @@ app.get("/deposits/:address", async (c) => {
       ...d,
       amount: d.amount.toString(),
       deposit_index: d.deposit_index.toString(),
+      block_number: d.block_number.toString(),
     }));
 
     return c.json({
