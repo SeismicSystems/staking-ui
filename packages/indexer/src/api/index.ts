@@ -1,19 +1,23 @@
-import { db } from "ponder:api";
-import schema from "ponder:schema";
+import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { Hono } from "hono";
 import { client, graphql } from "ponder";
-import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
+import { db } from "ponder:api";
+import schema from "ponder:schema";
+
+import {
+  serializeDeposit,
+  serializeDepositor,
+  serializeGlobalStats,
+} from "@/indexer/utils/serializers";
 
 const app = new Hono();
 
 app.use("/sql/*", client({ db, schema }));
-
 app.use("/", graphql({ db, schema }));
 app.use("/graphql", graphql({ db, schema }));
 
 app.get("/deposits/:address", async (c) => {
   const address = c.req.param("address") as `0x${string}`;
-
   const fromDate = c.req.query("from");
   const toDate = c.req.query("to");
   const days = c.req.query("days");
@@ -28,66 +32,30 @@ app.get("/deposits/:address", async (c) => {
       conditions.push(gte(schema.deposits.block_timestamp, daysAgo));
     } else {
       if (fromDate) {
-        const fromTimestamp = new Date(fromDate);
-        conditions.push(gte(schema.deposits.block_timestamp, fromTimestamp));
+        conditions.push(gte(schema.deposits.block_timestamp, new Date(fromDate)));
       }
       if (toDate) {
-        const toTimestamp = new Date(toDate);
-        conditions.push(lte(schema.deposits.block_timestamp, toTimestamp));
+        conditions.push(lte(schema.deposits.block_timestamp, new Date(toDate)));
       }
     }
 
-    const depositorStats = await db
-      .select()
-      .from(schema.depositors)
-      .where(eq(schema.depositors.address, address))
-      .limit(1);
-
-    const deposits = await db
-      .select()
-      .from(schema.deposits)
-      .where(and(...conditions))
-      .orderBy(desc(schema.deposits.block_timestamp))
-      .limit(limit);
-
-    const serializedDepositor = depositorStats[0]
-      ? {
-          ...depositorStats[0],
-          total_deposits: depositorStats[0].total_deposits.toString(),
-          total_amount: depositorStats[0].total_amount.toString(),
-        }
-      : null;
-
-    const serializedDeposits = deposits.map((d) => ({
-      ...d,
-      amount: d.amount.toString(),
-      deposit_index: d.deposit_index.toString(),
-      block_number: d.block_number.toString(),
-    }));
+    const [depositorStats, deposits] = await Promise.all([
+      db.select().from(schema.depositors).where(eq(schema.depositors.address, address)).limit(1),
+      db.select().from(schema.deposits).where(and(...conditions)).orderBy(desc(schema.deposits.block_timestamp)).limit(limit),
+    ]);
 
     return c.json({
       success: true,
       data: {
-        depositor: serializedDepositor,
-        deposits: serializedDeposits,
+        depositor: serializeDepositor(depositorStats[0]),
+        deposits: deposits.map(serializeDeposit),
         count: deposits.length,
-        filters: {
-          from: fromDate,
-          to: toDate,
-          days: days,
-          limit: limit,
-        },
+        filters: { from: fromDate, to: toDate, days, limit },
       },
     });
   } catch (error) {
     console.error("Error fetching deposits:", error);
-    return c.json(
-      {
-        success: false,
-        error: "Failed to fetch deposits",
-      },
-      500,
-    );
+    return c.json({ success: false, error: "Failed to fetch deposits" }, 500);
   }
 });
 
@@ -99,30 +67,13 @@ app.get("/stats", async (c) => {
       .where(eq(schema.deposit_stats.id, "global"))
       .limit(1);
 
-    const data = stats[0];
-
-    const serializedData = data
-      ? {
-          ...data,
-          total_deposits: data.total_deposits.toString(),
-          total_amount: data.total_amount.toString(),
-          unique_depositors: data.unique_depositors.toString(),
-        }
-      : null;
-
     return c.json({
       success: true,
-      data: serializedData,
+      data: serializeGlobalStats(stats[0]),
     });
   } catch (error) {
     console.error("Error fetching stats:", error);
-    return c.json(
-      {
-        success: false,
-        error: "Failed to fetch stats",
-      },
-      500,
-    );
+    return c.json({ success: false, error: "Failed to fetch stats" }, 500);
   }
 });
 
