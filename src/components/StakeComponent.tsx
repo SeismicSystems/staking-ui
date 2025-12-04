@@ -3,7 +3,6 @@ import { useState } from "react";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useShieldedWallet } from "seismic-react";
 import { type Hex, parseEther, formatEther } from "viem";
-import { DEPOSIT_CONTRACT_ADDRESS } from "seismic-viem";
 
 interface StakeComponentProps {
   depositSignatureData: {
@@ -93,7 +92,6 @@ export const StakeComponent = ({
         consensusSignature: args[4],
         depositDataRoot: args[5],
         value: stakeAmountBigInt,
-        address: DEPOSIT_CONTRACT_ADDRESS,
       });
 
       setTxHash(hash);
