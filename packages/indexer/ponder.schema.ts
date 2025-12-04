@@ -13,7 +13,7 @@ export const depositors = onchainTable("depositors", (t) => ({
 export const deposits = onchainTable(
   "deposits",
   (t) => ({
-    id: t.text().primaryKey(), // UUID
+    id: t.text().primaryKey(),
     node_pubkey: t.hex().notNull(),
     consensus_pubkey: t.hex().notNull(),
     withdrawal_credentials: t.hex().notNull(),
@@ -22,12 +22,10 @@ export const deposits = onchainTable(
     consensus_signature: t.hex().notNull(),
     deposit_index: t.bigint().notNull(),
 
-    // Transaction details
     block_number: t.bigint().notNull(),
     block_timestamp: t.timestamp().notNull(),
     transaction_hash: t.hex().notNull(),
 
-    // Derived fields
     depositor: t.hex().notNull(), // extracted from withdrawal_credentials if 0x01 type
 
     created_at: t.timestamp().notNull(),
