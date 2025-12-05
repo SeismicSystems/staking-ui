@@ -3,14 +3,21 @@ import { useState, useEffect, useCallback } from "react";
 export interface UserStats {
   address: string;
   total_deposits: string;
-  total_amount: string;
+  total_deposit_amount: string;
+  total_withdrawals: string;
+  total_withdrawal_amount: string;
+  net_amount: string;
   first_deposit_timestamp: string;
   last_deposit_timestamp: string;
+  last_withdrawal_timestamp?: string;
 }
 
 export interface GlobalStats {
   total_deposits: string;
-  total_amount: string;
+  total_deposit_amount: string;
+  total_withdrawals: string;
+  total_withdrawal_amount: string;
+  net_amount: string;
   unique_depositors: string;
   last_updated: string;
 }
