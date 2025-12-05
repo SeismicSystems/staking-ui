@@ -40,33 +40,3 @@ export interface UpdateStats {
   last_updated: Date;
   updated_at: Date;
 }
-
-// =============================================================================
-// API Response Types (serialized for JSON transport - used by frontend)
-// =============================================================================
-
-/** Serialized user stats returned from GET /deposits/:address */
-export interface UserStatsResponse {
-  address: string;
-  total_deposits: string;
-  total_amount: string;
-  first_deposit_timestamp: string;
-  last_deposit_timestamp: string;
-}
-
-/** Serialized global stats returned from GET /stats */
-export interface GlobalStatsResponse {
-  total_deposits: string;
-  total_amount: string;
-  unique_depositors: string;
-  last_updated: string;
-}
-
-/** Serialized deposit returned from GET /deposits/:address */
-export interface DepositResponse {
-  id: string;
-  amount: string;
-  block_timestamp: string;
-  transaction_hash: string;
-  deposit_index: string;
-}
