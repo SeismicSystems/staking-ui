@@ -8,7 +8,10 @@ export async function getGlobalStats(db: any): Promise<GlobalStats | null> {
     .select({
       id: schema.deposit_stats.id,
       total_deposits: schema.deposit_stats.total_deposits,
-      total_amount: schema.deposit_stats.total_amount,
+      total_deposit_amount: schema.deposit_stats.total_deposit_amount,
+      total_withdrawals: schema.deposit_stats.total_withdrawals,
+      total_withdrawal_amount: schema.deposit_stats.total_withdrawal_amount,
+      net_amount: schema.deposit_stats.net_amount,
       unique_depositors: schema.deposit_stats.unique_depositors,
     })
     .from(schema.deposit_stats)
@@ -18,7 +21,7 @@ export async function getGlobalStats(db: any): Promise<GlobalStats | null> {
   return result.length && result[0] ? result[0] : null;
 }
 
-export async function updateGlobalStats(
+export async function updateGlobalStatsForDeposit(
   db: any,
   stats: GlobalStats,
   amount: bigint,
@@ -29,10 +32,28 @@ export async function updateGlobalStats(
 
   const updates: UpdateStats = {
     total_deposits: stats.total_deposits + 1n,
-    total_amount: stats.total_amount + amount,
+    total_deposit_amount: stats.total_deposit_amount + amount,
+    net_amount: stats.net_amount + amount,
     unique_depositors: stats.unique_depositors + (isNewDepositor ? 1 : 0),
     last_updated: timestampDate,
     updated_at: timestampDate,
+  };
+
+  await db.update(schema.deposit_stats, { id: "global" }).set(updates);
+}
+
+export async function updateGlobalStatsForWithdrawal(
+  db: any,
+  stats: GlobalStats,
+  amount: bigint,
+  timestamp: Date,
+): Promise<void> {
+  const updates: UpdateStats = {
+    total_withdrawals: stats.total_withdrawals + 1n,
+    total_withdrawal_amount: stats.total_withdrawal_amount + amount,
+    net_amount: stats.net_amount - amount,
+    last_updated: timestamp,
+    updated_at: timestamp,
   };
 
   await db.update(schema.deposit_stats, { id: "global" }).set(updates);
@@ -50,7 +71,10 @@ export async function initializeGlobalStats(
     .values({
       id: "global",
       total_deposits: 1n,
-      total_amount: amount,
+      total_deposit_amount: amount,
+      total_withdrawals: 0n,
+      total_withdrawal_amount: 0n,
+      net_amount: amount,
       unique_depositors: 1,
       last_updated: timestampDate,
       created_at: timestampDate,

@@ -14,7 +14,10 @@ export function serializeDepositor(depositor: DepositorRecord | undefined) {
   return {
     ...depositor,
     total_deposits: serializeBigInt(depositor.total_deposits),
-    total_amount: serializeBigInt(depositor.total_amount),
+    total_deposit_amount: serializeBigInt(depositor.total_deposit_amount),
+    total_withdrawals: serializeBigInt(depositor.total_withdrawals),
+    total_withdrawal_amount: serializeBigInt(depositor.total_withdrawal_amount),
+    net_amount: serializeBigInt(depositor.net_amount),
   };
 }
 
@@ -33,7 +36,10 @@ export function serializeGlobalStats(stats: GlobalStatsRecord | undefined) {
   return {
     ...stats,
     total_deposits: serializeBigInt(stats.total_deposits),
-    total_amount: serializeBigInt(stats.total_amount),
+    total_deposit_amount: serializeBigInt(stats.total_deposit_amount),
+    total_withdrawals: serializeBigInt(stats.total_withdrawals),
+    total_withdrawal_amount: serializeBigInt(stats.total_withdrawal_amount),
+    net_amount: serializeBigInt(stats.net_amount),
     unique_depositors: stats.unique_depositors.toString(),
   };
 }

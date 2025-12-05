@@ -26,6 +26,13 @@ export default createConfig({
       max: 60,
     },
   },
+  blocks: {
+    WithdrawalTracker: {
+      chain: "seismic",
+      interval: 1,
+      startBlock: 0,
+    },
+  },
   contracts: {
     DepositContract: {
       chain: "seismic",
