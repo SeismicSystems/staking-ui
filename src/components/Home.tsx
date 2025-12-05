@@ -2,7 +2,9 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { useClient } from "../hooks/useClient";
+import { useUserStats, useGlobalStats } from "../hooks/useStats";
 import { DepositSignatureData } from "./DepositSignatureData";
+import { StatsDisplay } from "./StatsDisplay";
 import { Box, Typography, useTheme } from "@mui/material";
 import { formatEther } from "viem";
 import { StakeComponent } from "../components/StakeComponent";
@@ -30,6 +32,19 @@ export const Home = ({
   } | null>(null);
   const [stakeAmount, setStakeAmount] = useState<string>("32");
   const theme = useTheme();
+
+  // Stats hooks
+  const {
+    userStats,
+    loading: userStatsLoading,
+    refetch: refetchUserStats,
+  } = useUserStats(address);
+  const {
+    globalStats,
+    loading: globalStatsLoading,
+    refetch: refetchGlobalStats,
+  } = useGlobalStats();
+
   useEffect(() => {
     const fetchPublicKeys = async () => {
       const response = await fetch("/summit/get_public_keys");
@@ -67,6 +82,13 @@ export const Home = ({
     } catch (e) {
       console.error("Error fetching balance", e);
     }
+  };
+
+  // Combined refresh function for after deposits
+  const refreshAfterDeposit = async () => {
+    await refreshBalance();
+    // Refresh stats after a successful deposit
+    await Promise.all([refetchUserStats(), refetchGlobalStats()]);
   };
 
   useEffect(() => {
@@ -163,6 +185,15 @@ export const Home = ({
               </Typography>
             </Box>
           </Box>
+
+          {/* Stats Display */}
+          <StatsDisplay
+            userStats={userStats}
+            globalStats={globalStats}
+            userLoading={userStatsLoading}
+            globalLoading={globalStatsLoading}
+          />
+
           <Box
             sx={{
               display: "flex",
@@ -191,7 +222,7 @@ export const Home = ({
               stakeAmount={stakeAmount}
               onStakeAmountChange={setStakeAmount}
               userAddress={address}
-              onBalanceUpdate={refreshBalance}
+              onBalanceUpdate={refreshAfterDeposit}
             />
           </Box>
         </Box>
