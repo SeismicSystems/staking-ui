@@ -6,12 +6,10 @@ import { DEPOSIT_CONTRACT_ADDRESS } from "seismic-viem";
 
 import { depositContractAbi } from "@/indexer/abis/DepositContractAbi";
 
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 dotenv.config({ path: join(__dirname, "../../.env") });
-
 
 export default createConfig({
   chains: {

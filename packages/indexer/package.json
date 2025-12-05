@@ -1,7 +1,10 @@
 {
-  "name": "deposit-indexer",
+  "name": "@staking-ui/indexer",
   "private": true,
   "type": "module",
+  "exports": {
+    "./types": "./src/types.ts"
+  },
   "scripts": {
     "dev": "ponder dev --schema ponder_deposits",
     "start": "ponder start --schema ponder_deposits",

@@ -1,47 +1,21 @@
 {
-  "name": "stake-ui",
+  "name": "staking-ui",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
+    "dev": "bun run --filter @staking-ui/web dev",
+    "build": "bun run --filter @staking-ui/web build",
+    "lint": "bun run --filter '*' lint",
+    "preview": "bun run --filter @staking-ui/web preview",
+    "web:dev": "cd packages/web && bun run dev",
+    "web:build": "cd packages/web && bun run build",
     "indexer:dev": "cd packages/indexer && bun run dev",
     "indexer:create": "cd packages/indexer && bun run create-schema",
     "indexer:drop": "cd packages/indexer && bun run drop-schema",
     "indexer:reset": "cd packages/indexer && bun run reset-schema"
-  },
-  "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@metamask/sdk": "^0.34.0",
-    "@mui/icons-material": "^7.3.5",
-    "@mui/material": "^7.3.5",
-    "@rainbow-me/rainbowkit": "^2.2.9",
-    "@reown/appkit": "^1.8.14",
-    "@reown/appkit-adapter-wagmi": "^1.8.14",
-    "@tanstack/react-query": "^5.90.10",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "seismic-react": "^1.0.52",
-    "seismic-viem": "^1.0.52",
-    "viem": "^2.40.0",
-    "wagmi": "^3.0.2"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.39.1",
-    "@types/node": "^24.10.1",
-    "@types/react": "^19.2.5",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react-swc": "^4.2.2",
-    "eslint": "^9.39.1",
-    "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-react-refresh": "^0.4.24",
-    "globals": "^16.5.0",
-    "typescript": "~5.9.3",
-    "typescript-eslint": "^8.46.4",
-    "vite": "^7.2.4"
   }
 }

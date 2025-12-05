@@ -1,6 +1,3 @@
-
-
-
 // const parseChainId = (): number => {
 //     const chainId = import.meta.env.VITE_CHAIN_ID
 //     if (!chainId) {
@@ -9,5 +6,4 @@
 //     return parseInt(chainId)
 // }
 
-export const CHAIN_ID = 5124 // parseChainId()
-
+export const CHAIN_ID = 5124; // parseChainId()
