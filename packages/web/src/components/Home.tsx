@@ -61,7 +61,7 @@ export const Home = ({
       // Fetch with default 32 ETH just for initial display
       const amountInGwei = 32_000_000_000;
       const response = await fetch(
-        `/summit/get_deposit_signature/${amountInGwei}/${address}`
+        `/summit/get_deposit_signature/${amountInGwei}/${address}`,
       );
       const data = await response.json();
       setDepositSignatureData(data);

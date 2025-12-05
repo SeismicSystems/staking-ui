@@ -1,35 +1,22 @@
 import { useState, useEffect, useCallback } from "react";
+import type {
+  UserStatsResponse,
+  GlobalStatsResponse,
+  DepositResponse,
+} from "@staking-ui/indexer/types";
 
-// Configure your indexer API URL
+export type {
+  UserStatsResponse as UserStats,
+  GlobalStatsResponse as GlobalStats,
+  DepositResponse as Deposit,
+};
+
 const INDEXER_API_URL =
   import.meta.env.VITE_INDEXER_API_URL || "http://localhost:42069";
 
-export interface UserStats {
-  address: string;
-  total_deposits: string;
-  total_amount: string;
-  first_deposit_timestamp: string;
-  last_deposit_timestamp: string;
-}
-
-export interface GlobalStats {
-  total_deposits: string;
-  total_amount: string;
-  unique_depositors: string;
-  last_updated: string;
-}
-
-export interface Deposit {
-  id: string;
-  amount: string;
-  block_timestamp: string;
-  transaction_hash: string;
-  deposit_index: string;
-}
-
 export function useUserStats(address: string | undefined) {
-  const [userStats, setUserStats] = useState<UserStats | null>(null);
-  const [deposits, setDeposits] = useState<Deposit[]>([]);
+  const [userStats, setUserStats] = useState<UserStatsResponse | null>(null);
+  const [deposits, setDeposits] = useState<DepositResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -69,7 +56,9 @@ export function useUserStats(address: string | undefined) {
 }
 
 export function useGlobalStats() {
-  const [globalStats, setGlobalStats] = useState<GlobalStats | null>(null);
+  const [globalStats, setGlobalStats] = useState<GlobalStatsResponse | null>(
+    null,
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -100,4 +89,3 @@ export function useGlobalStats() {
 
   return { globalStats, loading, error, refetch: fetchGlobalStats };
 }
-

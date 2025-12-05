@@ -46,7 +46,9 @@ export const StatsDisplay = ({
               <Skeleton width={80} />
             ) : (
               <Typography variant="body1" fontWeight="bold">
-                {globalStats ? `${gweiToEth(globalStats.total_amount)} ETH` : "—"}
+                {globalStats
+                  ? `${gweiToEth(globalStats.total_amount)} ETH`
+                  : "—"}
               </Typography>
             )}
           </Grid>
