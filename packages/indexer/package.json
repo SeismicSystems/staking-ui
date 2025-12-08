@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
   "name": "staking-indexer",
-=======
-  "name": "@staking-ui/indexer",
->>>>>>> main
   "private": true,
   "type": "module",
   "exports": {
