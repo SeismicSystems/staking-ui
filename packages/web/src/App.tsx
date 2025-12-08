@@ -53,7 +53,7 @@ const Providers: React.FC<
 
 function App() {
   const [publicTransportURI, setPublicTransportURI] = useState<string>(
-    "https://az-1.seismictest.net/rpc"
+    "https://az-1.seismictest.net/rpc",
   );
 
   useEffect(() => {

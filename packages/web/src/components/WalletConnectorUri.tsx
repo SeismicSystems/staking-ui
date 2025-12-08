@@ -5,11 +5,11 @@ export function WalletConnectUri() {
 
   // Get WalletConnect connector
   const walletConnectConnector = connectors.find(
-    ({ id }) => id === "walletConnect"
+    ({ id }) => id === "walletConnect",
   );
 
   const listenForWalletConnectUri = async (
-    walletConnectConnector: Connector
+    walletConnectConnector: Connector,
   ) => {
     const provider = await walletConnectConnector.getProvider();
 
