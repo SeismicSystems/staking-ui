@@ -10,15 +10,19 @@ import {
 import { createDeposit } from "@/indexer/utils/deposits";
 import {
   ensureDepositor,
+  ensureDepositorForWithdrawal,
   getDepositorStats,
   isFirstDeposit,
-  updateDepositorStats,
+  updateDepositorStatsForDeposit,
+  updateDepositorStatsForWithdrawal,
 } from "@/indexer/utils/depositor";
 import {
   getGlobalStats,
   initializeGlobalStats,
-  updateGlobalStats,
+  updateGlobalStatsForDeposit,
+  updateGlobalStatsForWithdrawal,
 } from "@/indexer/utils/stats";
+import * as schema from "ponder:schema";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -40,7 +44,7 @@ ponder.on("DepositContract:DepositEvent", async ({ event, context }) => {
   const isNew = isFirstDeposit(depositorStats);
 
   if (depositorStats) {
-    await updateDepositorStats(
+    await updateDepositorStatsForDeposit(
       db,
       depositor,
       depositorStats,
@@ -52,7 +56,7 @@ ponder.on("DepositContract:DepositEvent", async ({ event, context }) => {
   const globalStats = await getGlobalStats(db);
 
   if (globalStats) {
-    await updateGlobalStats(
+    await updateGlobalStatsForDeposit(
       db,
       globalStats,
       amount,
@@ -61,5 +65,71 @@ ponder.on("DepositContract:DepositEvent", async ({ event, context }) => {
     );
   } else {
     await initializeGlobalStats(db, amount, event.block.timestamp);
+  }
+});
+
+interface Withdrawal {
+  index: bigint;
+  validatorIndex: bigint;
+  address: `0x${string}`;
+  amount: bigint;
+}
+
+interface BlockWithWithdrawals {
+  number: bigint;
+  timestamp: bigint;
+  withdrawals?: Withdrawal[];
+}
+
+ponder.on("WithdrawalTracker:block", async ({ event, context }) => {
+  const { db, client } = context;
+
+  const block = await client.getBlock({
+    blockNumber: event.block.number,
+    includeTransactions: false,
+  });
+
+  const withdrawals = block.withdrawals;
+
+  if (!withdrawals || withdrawals.length === 0) return;
+
+  const blockTimestamp = new Date(Number(block.timestamp) * 1000);
+
+  for (const withdrawal of withdrawals) {
+    const amount = BigInt(withdrawal.amount);
+    const address = withdrawal.address;
+
+    await db.insert(schema.withdrawals).values({
+      id: `${block.number}-${withdrawal.index}`,
+      validator_index: BigInt(withdrawal.validatorIndex),
+      address,
+      amount,
+      block_number: block.number,
+      block_timestamp: blockTimestamp,
+      created_at: new Date(),
+    });
+
+    await ensureDepositorForWithdrawal(db, address, blockTimestamp);
+
+    const depositorStats = await getDepositorStats(db, address);
+    if (depositorStats) {
+      await updateDepositorStatsForWithdrawal(
+        db,
+        address,
+        depositorStats,
+        amount,
+        blockTimestamp,
+      );
+    }
+
+    const globalStats = await getGlobalStats(db);
+    if (globalStats) {
+      await updateGlobalStatsForWithdrawal(
+        db,
+        globalStats,
+        amount,
+        blockTimestamp,
+      );
+    }
   }
 });

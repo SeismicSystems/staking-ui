@@ -40,27 +40,67 @@ export const StatsDisplay = ({
         <Grid container spacing={2}>
           <Grid size={4}>
             <Typography variant="caption" color="text.secondary">
-              Total Staked
+              Net Staked
+            </Typography>
+            {globalLoading ? (
+              <Skeleton width={80} />
+            ) : (
+              <Typography variant="body1" fontWeight="bold">
+                {globalStats ? `${gweiToEth(globalStats.net_amount)} ETH` : "—"}
+              </Typography>
+            )}
+          </Grid>
+          <Grid size={4}>
+            <Typography variant="caption" color="text.secondary">
+              Total Deposited
             </Typography>
             {globalLoading ? (
               <Skeleton width={80} />
             ) : (
               <Typography variant="body1" fontWeight="bold">
                 {globalStats
-                  ? `${gweiToEth(globalStats.total_amount)} ETH`
+                  ? `${gweiToEth(globalStats.total_deposit_amount)} ETH`
                   : "—"}
               </Typography>
             )}
           </Grid>
           <Grid size={4}>
             <Typography variant="caption" color="text.secondary">
-              Total Deposits
+              Total Withdrawn
+            </Typography>
+            {globalLoading ? (
+              <Skeleton width={80} />
+            ) : (
+              <Typography variant="body1" fontWeight="bold">
+                {globalStats
+                  ? `${gweiToEth(globalStats.total_withdrawal_amount)} ETH`
+                  : "—"}
+              </Typography>
+            )}
+          </Grid>
+        </Grid>
+        <Grid container spacing={2} sx={{ mt: 1 }}>
+          <Grid size={4}>
+            <Typography variant="caption" color="text.secondary">
+              Deposits
             </Typography>
             {globalLoading ? (
               <Skeleton width={60} />
             ) : (
               <Typography variant="body1" fontWeight="bold">
                 {globalStats?.total_deposits || "—"}
+              </Typography>
+            )}
+          </Grid>
+          <Grid size={4}>
+            <Typography variant="caption" color="text.secondary">
+              Withdrawals
+            </Typography>
+            {globalLoading ? (
+              <Skeleton width={60} />
+            ) : (
+              <Typography variant="body1" fontWeight="bold">
+                {globalStats?.total_withdrawals || "—"}
               </Typography>
             )}
           </Grid>
@@ -93,27 +133,65 @@ export const StatsDisplay = ({
             Your Staking Stats
           </Typography>
           <Grid container spacing={2}>
-            <Grid size={6}>
+            <Grid size={4}>
               <Typography variant="caption" color="text.secondary">
-                Your Total Staked
+                Net Staked
               </Typography>
               {userLoading ? (
                 <Skeleton width={80} />
               ) : (
                 <Typography variant="body1" fontWeight="bold">
-                  {gweiToEth(userStats.total_amount)} ETH
+                  {gweiToEth(userStats.net_amount)} ETH
                 </Typography>
               )}
             </Grid>
+            <Grid size={4}>
+              <Typography variant="caption" color="text.secondary">
+                Total Deposited
+              </Typography>
+              {userLoading ? (
+                <Skeleton width={80} />
+              ) : (
+                <Typography variant="body1" fontWeight="bold">
+                  {gweiToEth(userStats.total_deposit_amount)} ETH
+                </Typography>
+              )}
+            </Grid>
+            <Grid size={4}>
+              <Typography variant="caption" color="text.secondary">
+                Total Withdrawn
+              </Typography>
+              {userLoading ? (
+                <Skeleton width={80} />
+              ) : (
+                <Typography variant="body1" fontWeight="bold">
+                  {gweiToEth(userStats.total_withdrawal_amount)} ETH
+                </Typography>
+              )}
+            </Grid>
+          </Grid>
+          <Grid container spacing={2} sx={{ mt: 1 }}>
             <Grid size={6}>
               <Typography variant="caption" color="text.secondary">
-                Your Deposits
+                Deposits
               </Typography>
               {userLoading ? (
                 <Skeleton width={60} />
               ) : (
                 <Typography variant="body1" fontWeight="bold">
                   {userStats.total_deposits}
+                </Typography>
+              )}
+            </Grid>
+            <Grid size={6}>
+              <Typography variant="caption" color="text.secondary">
+                Withdrawals
+              </Typography>
+              {userLoading ? (
+                <Skeleton width={60} />
+              ) : (
+                <Typography variant="body1" fontWeight="bold">
+                  {userStats.total_withdrawals}
                 </Typography>
               )}
             </Grid>

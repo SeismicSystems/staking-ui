@@ -1,5 +1,5 @@
 {
-  "name": "@staking-ui/indexer",
+  "name": "staking-indexer",
   "private": true,
   "type": "module",
   "exports": {
